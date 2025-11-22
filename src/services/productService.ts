@@ -224,4 +224,11 @@ export const productService = {
     const url = buildProductEndpoint("filters");
     return fetchProductData<ProductSearchListDropdownResponse>(url);
   },
+
+  // Get similar products by product ID
+  async getSimilarProducts(productId: string | number): Promise<import("@/types/product").SimilarProduct[]> {
+    const config = getApiConfig();
+    const url = `${config.products.baseUrl}/products/${productId}/similar`;
+    return fetchProductData<import("@/types/product").SimilarProduct[]>(url);
+  },
 };

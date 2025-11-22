@@ -9,7 +9,7 @@ export default function Footer() {
         {/* Mobile Layout */}
         <div className="block md:hidden">
           {/* Logo and Description */}
-          <div className="text-center mb-8">
+          <div className="text-left mb-8">
             <div className="flex items-center mb-6">
               <Image
                 src="/images/Logo_white.png"
@@ -233,7 +233,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="relative z-10 border-t border-green-700 py-3 sm:py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-start text-green-200 text-xs sm:text-sm">
             ©2024 Sapana Fertilizers Pvt Ltd
           </p>

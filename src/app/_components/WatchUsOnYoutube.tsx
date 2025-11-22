@@ -114,7 +114,7 @@ export default function WatchUsOnYoutube() {
             <div className="block lg:hidden">
               <div className="relative">
                 {/* Video Container */}
-                <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 max-w-sm mx-auto">
+                <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-sm mx-auto">
                   {/* Video Thumbnail */}
                   <div className="relative mb-4 rounded-xl overflow-hidden">
                     <a
@@ -171,11 +171,10 @@ export default function WatchUsOnYoutube() {
                       <button
                         key={index}
                         onClick={() => goToVideoMobile(index)}
-                        className={`w-3 h-3 rounded-full transition-colors ${
-                          index === currentSlide
-                            ? "bg-green-600"
-                            : "bg-gray-300 hover:bg-gray-400"
-                        }`}
+                        className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide
+                          ? "bg-green-600"
+                          : "bg-gray-300 hover:bg-gray-400"
+                          }`}
                       />
                     ))}
                   </div>
@@ -214,7 +213,7 @@ export default function WatchUsOnYoutube() {
                               className="group cursor-pointer"
                             >
                               {/* Video Card */}
-                              <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                              <div className="bg-white rounded-2xl p-4 ">
                                 {/* Video Thumbnail */}
                                 <div className="relative mb-4 rounded-xl overflow-hidden">
                                   <a
@@ -225,9 +224,9 @@ export default function WatchUsOnYoutube() {
                                   >
                                     <div className="aspect-video relative">
                                       {video.thumbnail &&
-                                      !video.thumbnail.includes(
-                                        "placeholder"
-                                      ) ? (
+                                        !video.thumbnail.includes(
+                                          "placeholder"
+                                        ) ? (
                                         <img
                                           src={video.thumbnail}
                                           alt={video.title}
@@ -266,7 +265,7 @@ export default function WatchUsOnYoutube() {
               </div>
 
               {/* Desktop Navigation */}
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-4 text-primary">
                 {/* Previous Button */}
                 <button
                   onClick={prevSlide}
@@ -282,11 +281,10 @@ export default function WatchUsOnYoutube() {
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        index === currentSlide
-                          ? "bg-green-600"
-                          : "bg-gray-300 hover:bg-gray-400"
-                      }`}
+                      className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide
+                        ? "bg-primary"
+                        : "bg-gray-300 hover:bg-gray-400"
+                        }`}
                     />
                   ))}
                 </div>

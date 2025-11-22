@@ -26,8 +26,6 @@ export default function TopBarnds() {
   const error = errorStates.brands;
   const apiItems: BrandItem[] = brandsData?.items || [];
 
-
-
   // Convert API data to display format
   const apiBrands = apiItems.map((item) => ({
     id: item.brand_id,
@@ -39,7 +37,7 @@ export default function TopBarnds() {
   const brands = apiBrands.length > 0 ? apiBrands : [];
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-white border-b border-b-dimGray_01">
+    <section className="py-10 sm:py-12 lg:py-16 bg-white border-b border-b-dimGray_01">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Loading State */}
         {isLoading && (
@@ -83,7 +81,7 @@ export default function TopBarnds() {
                   <div
                     key={brand.id}
                     onClick={() => handleBrandClick(brand.name)}
-                    className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+                    className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-[#E0E2E7] hover:shadow-md transition-shadow cursor-pointer"
                   >
                     {/* Brand Logo */}
                     <div className="flex items-center justify-center h-16 sm:h-20">
@@ -120,7 +118,7 @@ export default function TopBarnds() {
             {/* Desktop Layout */}
             <div className="hidden lg:block">
               {/* Main Flex Container */}
-              <div className="flex flex-row items-center justify-between gap-16">
+              <div className="flex flex-row items-center justify-between gap-4">
                 {/* Left Side - Text Content */}
                 <div className="flex-shrink-0 text-left">
                   <h2 className="text-6xl font-[Google Sans] font-medium text-[28px]  text-gray-900 mb-6">
@@ -134,13 +132,13 @@ export default function TopBarnds() {
 
                 {/* Right Side - Brands */}
                 <div className="flex-1 max-w-3xl">
-                  <div className="overflow-x-auto scrollbar scrollbar-w-1 scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+                  <div className="overflow-x-auto mobile-scroll p-0 scrollbar-hide">
                     <div className="flex items-center gap-16 pb-2 min-w-max">
                       {brands.slice(0, 5).map((brand) => (
                         <div
                           key={brand.id}
                           onClick={() => handleBrandClick(brand.name)}
-                          className="flex items-center justify-center flex-shrink-0 min-w-[160px] cursor-pointer hover:opacity-80 transition-opacity"
+                          className="flex items-center rounded-xl py-2 justify-center flex-shrink-0 min-w-[160px] cursor-pointer hover:opacity-80 transition-opacity border border-dimGray_01"
                         >
                           {/* Brand Logo */}
                           <div className="flex items-center justify-center">

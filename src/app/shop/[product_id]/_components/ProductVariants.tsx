@@ -25,7 +25,7 @@ export default function ProductVariants({
       </h3>
 
       {/* Variant Options */}
-      <div className="flex lg:flex-wrap gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-visible px-4 lg:px-0 pb-2 lg:pb-0 scrollbar-hide">
+      <div className="flex gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-visible px-4 lg:px-0 pb-2 lg:pb-0 scrollbar-hide">
         {variants.map((variant, index: number) => {
           const isSelected = variant.variant_id === selectedVariant.variant_id;
           const isActive = variant.is_active && variant.stock_quantity > 0;
@@ -38,7 +38,7 @@ export default function ProductVariants({
               key={index}
               className={`relative rounded-xl border transition-all flex-shrink-0 ${
                 isSelected
-                  ? "border-[#00C853] bg-[#E8F7F0]"
+                  ? "border-primary bg-[#E8F7F0]"
                   : isActive
                   ? "border-[#E0E0E0] bg-[#F5F5F5] hover:border-[#00C853] cursor-pointer"
                   : "border-[#E0E0E0] bg-gray-50 opacity-50 cursor-not-allowed"

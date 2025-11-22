@@ -160,7 +160,7 @@ export default function ProductsSection() {
                     {truncateText(item.product_description, 50)}
                   </p>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex justify-between">
                     <div>
                       <span className="text-base font-bold text-gray-800">
                         ₹
@@ -173,7 +173,7 @@ export default function ProductsSection() {
                         {item.product_variants[0]?.uom || "gm"}
                       </span>
                     </div>
-                    <button className="w-full bg-green-800 hover:bg-green-900 text-white px-3 py-1 rounded-lg text-xs font-medium">
+                    <button className="w-max bg-primary hover:bg-green-900 text-white px-3 py-1 rounded-lg text-xs font-medium">
                       Buy
                     </button>
                   </div>
@@ -190,11 +190,11 @@ export default function ProductsSection() {
         </Button>
         {/* Desktop Layout */}
         {!isLoading && !error && (
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* First Product - Large Card */}
+          <div className="hidden md:grid md:grid-cols-5 gap-3">
+            {/* First Product - Large Card (spans 2 columns × 2 rows) */}
             {displayItems[0] && (
-              <div className="lg:col-span-1 lg:row-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex justify-center items-center">
-                <div className="h-max">
+              <div className="md:col-span-2 md:row-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
+                <div className="flex-1 flex flex-col justify-center">
                   <div className="w-full h-48 rounded-lg flex items-center justify-center mb-6">
                     {displayItems[0].image ? (
                       <img
@@ -219,7 +219,7 @@ export default function ProductsSection() {
                     {displayItems[0].brand.brand_name}
                   </p>
 
-                  <div className="flex items-center justify-center gap-4">
+                  <div className="flex flex-col items-center gap-3">
                     <div className="text-center">
                       <span className="text-lg font-bold text-gray-800">
                         ₹
@@ -232,7 +232,7 @@ export default function ProductsSection() {
                         {displayItems[0].product_variants[0]?.uom || "gm"}
                       </span>
                     </div>
-                    <button className="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    <button className="bg-green-800 hover:bg-green-900 text-white px-6 py-2 rounded-lg text-sm font-medium">
                       Buy
                     </button>
                   </div>
@@ -240,13 +240,13 @@ export default function ProductsSection() {
               </div>
             )}
 
-            {/* Other Products */}
-            {displayItems.slice(1, 5).map((item) => (
+            {/* Products 2-4 - Regular Cards (1 column × 1 row each) */}
+            {displayItems.slice(1, 4).map((item) => (
               <div
                 key={item.product_id}
-                className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+                className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col"
               >
-                <div className="w-full h-24  rounded-lg flex items-center justify-center mb-4">
+                <div className="w-full h-24 rounded-lg flex items-center justify-center mb-4">
                   {item.image ? (
                     <img
                       src={item.image}
@@ -263,12 +263,12 @@ export default function ProductsSection() {
                 <h3 className="font-semibold text-gray-800 mb-2">
                   {item.product_name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2 flex-1">
                   {truncateText(item.product_description, 80)}
                 </p>
 
-                <div className="flex items-center justify-between">
-                  <div>
+                <div className="flex flex-col gap-3">
+                  <div className="text-center">
                     <span className="text-lg font-bold text-gray-800">
                       ₹{formatPrice(item.product_variants[0]?.discounted_price)}
                     </span>
@@ -277,12 +277,60 @@ export default function ProductsSection() {
                       {item.product_variants[0]?.uom || "gm"}
                     </span>
                   </div>
-                  <button className="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                  <button className="bg-green-800 hover:bg-green-900 text-white px-6 py-2 rounded-lg text-sm font-medium w-full">
                     Buy
                   </button>
                 </div>
               </div>
             ))}
+
+            {/* Product 5 - Wide Horizontal Card (spans 3 columns × 1 row) */}
+            {displayItems[4] && (
+              <div className="md:col-span-3 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-6 h-full">
+                  <div className="w-32 h-32 flex-shrink-0 rounded-lg flex items-center justify-center">
+                    {displayItems[4].image ? (
+                      <img
+                        src={displayItems[4].image}
+                        alt={displayItems[4].product_name}
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-16 h-20 bg-green-200 rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">🧪</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-800 mb-2">
+                      {displayItems[4].product_name}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                      {truncateText(displayItems[4].product_description, 150)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                    <div className="text-right">
+                      <span className="text-lg font-bold text-gray-800">
+                        ₹
+                        {formatPrice(
+                          displayItems[4].product_variants[0]?.discounted_price
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">
+                        for {displayItems[4].product_variants[0]?.size || 100}
+                        {displayItems[4].product_variants[0]?.uom || "gm"}
+                      </span>
+                    </div>
+                    <button className="bg-green-800 hover:bg-green-900 text-white px-6 py-2 rounded-lg text-sm font-medium">
+                      Buy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

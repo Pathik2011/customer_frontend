@@ -145,3 +145,19 @@ export interface ProductSearchListDropdownResponse {
   brands: ProductBrand[];
   crops: ProductCropDropdown[];
 }
+
+// Similar Product Type (simplified product for similar products section)
+export interface SimilarProduct {
+  display_order: number;
+  product_id: number;
+  product_name: string;
+  brand_name: string;
+  image_url: string;
+  variants: {
+    product_variant_id: number;
+    size: number;
+    uom: string;
+    price: number;
+    discounted_price: number;
+  }[];
+}

@@ -72,14 +72,14 @@ export default function AllProductSection() {
   };
 
   return (
-    <section className="py-10 sm:py-20 lg:py-24 bg-[#FAFAFA] border-b border-b-dimGray_01">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-3 sm:py-20 lg:py-20 bg-[#FAFAFA] border-b border-b-dimGray_01">
+      <div className="max-w-7xl mx-auto px-4 ">
         {/* Mobile Layout */}
         <div className="block lg:hidden">
           {/* Header - Mobile */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-1 lg:mb-8">
             {/* Mobile Filters */}
-            <div className="mb-6 relative lg:static z-10">
+            <div className="mb-0 lg:mb-6 relative lg:static z-10">
               <Suspense
                 fallback={
                   <div className="h-32 flex items-center justify-center">
@@ -160,7 +160,7 @@ export default function AllProductSection() {
           {/* Products Grid - Mobile */}
           {!isLoading && !error && products.length > 0 && (
             <div className="relative">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8 relative z-0">
+              <div className="w-max mx-auto  grid grid-cols-2 gap-3 sm:gap-4 mb-8 relative z-0">
                 {products.map((product, index) => (
                   <ProductCart
                     product={product}
@@ -188,13 +188,6 @@ export default function AllProductSection() {
                   "Load More"
                 )}
               </button>
-            </div>
-          )}
-
-          {/* No More Products Message - Mobile */}
-          {!isLoading && !error && !hasMore && products.length > 0 && (
-            <div className="text-center text-gray-500 text-sm">
-              You've seen all {products.length} products
             </div>
           )}
         </div>
@@ -308,13 +301,6 @@ export default function AllProductSection() {
                   "Load More"
                 )}
               </button>
-            </div>
-          )}
-
-          {/* No More Products Message - Desktop */}
-          {!isLoading && !error && !hasMore && products.length > 0 && (
-            <div className="text-center text-gray-500 text-sm">
-              You've seen all {products.length} products
             </div>
           )}
         </div>

@@ -40,9 +40,11 @@ export default function ProductsForUpcomingSeasons() {
   return (
     <section
       className="py-16 sm:py-20 lg:py-24 bg-gray-50 border-b border-b-dimGray_01"
-      style={{ backgroundImage: 'url(/images/Products_for_upcoming_seasons.png)' }}
+      style={{
+        backgroundImage: "url(/images/Products_for_upcoming_seasons.png)",
+      }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 lg:px-8">
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-12">
@@ -82,7 +84,7 @@ export default function ProductsForUpcomingSeasons() {
               </div>
 
               {/* Products Grid - Mobile (2 columns) */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+              <div className="w-max mx-auto grid grid-cols-2 gap-3 sm:gap-4 mb-8">
                 {apiItems.slice(0, 2).map((product: any, index) => (
                   <ProductCart product={product} key={index} />
                 ))}
@@ -146,7 +148,7 @@ export default function ProductsForUpcomingSeasons() {
               </div>
 
               {/* Products Grid - Desktop */}
-              <div className="grid grid-cols-4 xl:grid-cols-5  gap-6">
+              <div className="grid grid-cols-4 xl:grid-cols-5 gap-6">
                 {apiItems.map((product: any, index: number) => (
                   <ProductCart product={product} key={index} />
                 ))}

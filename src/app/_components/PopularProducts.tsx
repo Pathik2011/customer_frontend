@@ -34,7 +34,7 @@ export default function PopularProducts() {
 
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-white border-b border-b-dimGray_01">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 lg:px-8">
         {/* Mobile Layout */}
         <div className="block lg:hidden">
           {/* Header - Mobile */}
@@ -67,7 +67,7 @@ export default function PopularProducts() {
           {/* Products Grid - Mobile (2 columns) */}
           {!isLoading && !error && (
             <>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+              <div className="w-max mx-auto grid grid-cols-2 gap-3 sm:gap-4 mb-8">
                 {products.slice(0, visibleCountMobile).map((product) => (
                   <ProductCart product={product} key={product.product_id} />
                 ))}
@@ -121,7 +121,7 @@ export default function PopularProducts() {
           {!isLoading && !error && (
             <>
               <div className="grid grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
-                {[...products, ...products, ...products]
+                {products
                   .slice(0, visibleCountDesktop)
                   .map((product, index) => (
                     <ProductCart

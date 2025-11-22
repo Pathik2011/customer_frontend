@@ -28,13 +28,12 @@ export default function SeedsSection() {
   return (
     <section
       className="py-16 sm:py-20 lg:py-24 relative overflow-hidden border-b border-b-dimGray_01 bg-[#E8F7F0]"
-      style={{ backgroundImage: 'url(/images/seeds_section_bg.png)' }}
-
+      style={{ backgroundImage: "url(/images/seeds_section_bg.png)" }}
     >
       {/* Background overlay for better content readability */}
       <div className="absolute inset-0 bg-transparent bg-opacity-80"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 lg:px-8">
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-12">
@@ -72,7 +71,7 @@ export default function SeedsSection() {
               </div>
 
               {/* Seeds Grid - Mobile (2 columns) */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+              <div className="mx-auto w-max grid grid-cols-2 gap-3 sm:gap-4 mb-8">
                 {seeds.slice(0, 2).map((product: any, index: number) => (
                   <ProductCart product={product} key={index} />
                 ))}
@@ -124,7 +123,7 @@ export default function SeedsSection() {
               </div>
 
               {/* Seeds Grid - Desktop */}
-              <div className="grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-5 gap-6">
                 {seeds.map((product: any, index: number) => (
                   <ProductCart product={product} key={index} />
                 ))}

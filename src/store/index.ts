@@ -4,6 +4,7 @@ export { useCategoryStore } from './useCategoryStore';
 export { useBrandStore } from './useBrandStore';
 export { useUIStore } from './useUIStore';
 export { useHomepageStore } from './useHomepageStore';
+export { useSimilarProductsStore } from './useSimilarProductsStore';
 
 // Export store types for convenience
 export type { Product, ProductFilters } from '@/types/product';

@@ -17,11 +17,11 @@ export default function CategoriesSection() {
           Explore Categories
         </h2>
 
-        <div className="mx-auto grid grid-cols-2 place-items-center sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+        <div className="w-max mx-auto grid grid-cols-3 lg:grid-cols-6 gap-3 justify-items-center">
           {categories.map((category, index) => (
             <button
               key={index}
-              className="w-40 h-48 group flex flex-col items-center justify-center bg-offWhite rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 hover:border-green-200"
+              className="w-[86px] h-[112px] lg:w-40 lg:h-48 group flex flex-col items-center justify-center bg-offWhite rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 hover:border-green-200"
             >
               <div
                 className={`rounded-full flex items-center justify-center mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform duration-200`}
@@ -31,7 +31,7 @@ export default function CategoriesSection() {
                   width={100}
                   src={category.image}
                   alt={category.name}
-                  className="w-[100px] h-[100px] rounded-[12px] object-contain"
+                  className="w-[54px] h-[54px] lg:w-[100px] lg:h-[100px] rounded-[12px] object-contain"
                   unoptimized
                 />
               </div>

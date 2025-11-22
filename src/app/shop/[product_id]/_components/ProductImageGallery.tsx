@@ -49,7 +49,7 @@ export default function ProductImageGallery({
       )}
 
       {/* Main Image */}
-      <div className="flex-1 relative aspect-square bg-dimGray_01 lg:rounded-2xl overflow-hidden">
+      <div className="max-h-[526px] flex-1 relative aspect-square bg-dimGray_01 lg:rounded-2xl overflow-hidden">
         <Image
           src={images[selectedImage]?.url || "/images/placeholder-product.png"}
           alt={productName}

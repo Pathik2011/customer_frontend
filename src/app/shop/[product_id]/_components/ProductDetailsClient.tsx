@@ -207,7 +207,9 @@ export default function ProductDetailsClient({
   );
   const [quantity, setQuantity] = useState(1);
 
-  const media = useMemo(() => { return product.media?.filter((item) => item.media_type === "IMAGE") }, [product])
+  const media = useMemo(() => {
+    return product.media?.filter((item) => item.media_type === "IMAGE");
+  }, [product]);
 
   const handleQuantityChange = (delta: number) => {
     const newQuantity = quantity + delta;
@@ -294,7 +296,7 @@ export default function ProductDetailsClient({
         <ProductTabs product={product} />
 
         {/* Similar Products */}
-        <SimilarProducts products={products} />
+        <SimilarProducts product_id={product.product_id} />
       </div>
     </section>
   );

@@ -118,7 +118,7 @@ const ProductCart = ({ product }: Props) => {
   return (
     <div
       key={product.product_id}
-      className="bg-white rounded-xl p-4 shadow-sm border border-dimGray_01 hover:shadow-md transition-shadow flex flex-col  min-w-[177px] lg:min-w-[240px] min-h-[340px]"
+      className="bg-white rounded-xl p-4 shadow-sm border border-dimGray_01 hover:shadow-md transition-shadow flex flex-col  min-w-[177px] w-[177px] lg:min-w-[240px] lg:w-[240px] min-h-[348px]"
     >
       {/* Product Image Container */}
       <div className="mb-4 flex-shrink-0 relative">
@@ -166,7 +166,7 @@ const ProductCart = ({ product }: Props) => {
       </div>
 
       {/* Product Info */}
-      <div className="flex-grow flex flex-col text-center relative z-10">
+      <div className="text-left flex-grow flex flex-col relative z-10">
         <h3 className="font-semibold text-gray-800 text-base mb-2 leading-tight break-words">
           {product.product_name}
         </h3>
@@ -174,7 +174,7 @@ const ProductCart = ({ product }: Props) => {
 
         {/* Price */}
         <div className="mb-6">
-          <div className="flex items-center justify-center gap-2 flex-wrap">
+          <div className="flex items-center justify-start gap-2 flex-wrap">
             <span className="text-xl font-bold text-primary">
               {formatPrice(discountedPrice)}
             </span>

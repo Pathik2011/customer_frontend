@@ -272,7 +272,7 @@ export default function Header() {
           style={{ overflow: "visible", zIndex: 100 }}
         >
           <div
-            className="max-w-7xl mx-auto px-2 sm:px-4"
+            className=" mx-auto px-2 sm:px-4"
             style={{ overflow: "visible" }}
           >
             {/* Desktop Navigation */}

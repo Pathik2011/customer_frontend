@@ -122,26 +122,29 @@ export default function ProductsAccordingToCrops() {
             </div>
 
             {/* Crops Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
-              {crops.map((crop) => (
+            <div className="place-items-center grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
+              {crops.map((crop, index) => (
                 <div
                   key={crop.id}
                   onClick={() => handleCropClick(crop.name)}
-                  className="group cursor-pointer"
+                  className={`group cursor-pointer ${index === crops.length - 1 && crops.length % 2 !== 0
+                    ? "col-span-2 sm:col-span-1"
+                    : ""
+                    }`}
                 >
                   {/* Crop Card */}
                   <div className="rounded-2xl p-4 sm:p-6 lg:p-8 text-center transition-transform group-hover:scale-105">
                     {/* Crop Image with Background */}
                     <div className="mb-4 sm:mb-6 relative">
                       {/* Background Image */}
-                      <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 mx-auto relative">
+                      <div className="w-36 h-36 sm:w-36 sm:h-36 lg:w-40 lg:h-40 mx-auto relative">
                         <img
                           src={crop.bgImage}
                           alt=""
                           className="w-full h-full object-contain"
                         />
                         {/* Crop Image on top */}
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden">
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden">
                           {crop.image ? (
                             <img
                               src={crop.image}

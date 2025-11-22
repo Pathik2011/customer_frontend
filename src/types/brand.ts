@@ -13,4 +13,3 @@ export interface BrandsResponse {
   brands: Brand[];
   total: number;
 }
-// # --- IGNORE ---

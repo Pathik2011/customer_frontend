@@ -105,7 +105,7 @@ export default function SeasonalSection() {
           {!isLoading && !error && (
             <div className="relative">
               {/* Mobile Layout */}
-              <div className="block lg:hidden">
+              <div className="block lg:hidden bg-dimYellow_01 p-3 rounded-lg">
                 {/* Question Section - Mobile */}
                 <div className="bg-yellow-200 rounded-xl p-6 mb-6 relative">
                   {/* Quote marks */}
@@ -126,9 +126,9 @@ export default function SeasonalSection() {
                 </div>
 
                 {/* Products Section - Mobile (Horizontal Scroll) */}
-                <div className="bg-yellow-100 rounded-xl p-4">
+                <div className="bg-yellow-100 rounded-xl">
                   <div className="overflow-x-auto mobile-scroll">
-                    <div className="flex gap-4 pb-2 min-w-max">
+                    <div className="flex gap-2 pb-2 min-w-max">
                       {slides[currentSlide]?.products.map(
                         (product: any, index: number) => (
                           <ProductCart product={product} key={index} />
@@ -145,7 +145,7 @@ export default function SeasonalSection() {
                   {/* Content Grid */}
                   <div className="grid grid-cols-4 gap-8 items-stretch">
                     {/* Question Section */}
-                    <div className="relative col-span-1 bg-dimYellow rounded-xl p-6 py-16">
+                    <div className="relative col-span-1 bg-dimYellow rounded-xl p-6 py-16 mb-3">
                       {/* Quote marks */}
                       <div className="absolute -top-6 left-6 text-6xl text-yellow-600 mb-4 leading-none font-serif">
                         <UpperQuotesIcon className="sm:w-8 w-16" />
@@ -165,8 +165,8 @@ export default function SeasonalSection() {
                     </div>
 
                     {/* Products Section */}
-                    <div className="col-span-3 overflow-x-auto mobile-scroll">
-                      <div className="flex gap-4 pb-2 min-w-max">
+                    <div className="h-full col-span-3 overflow-x-auto mobile-scroll p-0">
+                      <div className="flex gap-4 min-w-max">
                         {slides[currentSlide]?.products.map(
                           (product: any, index: number) => (
                             <ProductCart product={product} key={index} />
@@ -179,14 +179,14 @@ export default function SeasonalSection() {
               </div>
 
               {/* Navigation */}
-              <div className="flex items-center justify-center mt-6 sm:mt-8 gap-1">
+              <div className="flex items-center text-primary justify-center mt-6 sm:mt-8 gap-3">
                 {/* Previous Button */}
                 <button
                   onClick={prevSlide}
-                  className="w-10 h-10 sm:w-12 sm:h-12 text-white rounded-none flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-[22px] h-[22px] rounded-none flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={slides.length <= 1}
                 >
-                  <LeftArrowIcon />
+                  <LeftArrowIcon className="w-full h-full" />
                 </button>
 
                 {/* Dots Indicator */}
@@ -207,10 +207,10 @@ export default function SeasonalSection() {
                 {/* Next Button */}
                 <button
                   onClick={nextSlide}
-                  className="w-10 h-10 sm:w-12 sm:h-12 text-white rounded-none flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-[22px] h-[22px] rounded-none flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={slides.length <= 1}
                 >
-                  <RightArrowIcon />
+                  <RightArrowIcon className="w-full h-full" />
                 </button>
               </div>
             </div>
