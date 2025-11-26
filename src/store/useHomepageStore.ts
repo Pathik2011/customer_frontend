@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   HomepageResponse,
   HomepageSection,
@@ -11,12 +11,11 @@ import {
   CropItem,
   SeedItem,
   HomepageBottomResponse,
-} from "@/types/homepage";
-import { LoadingState } from "@/types/api";
-import { homepageService } from "@/services/homepageService";
-import { getApiConfig } from "@/config/api";
+} from '@/types/homepage';
+import { homepageService } from '@/services/homepageService';
+import { CACHE_CONFIG } from '@/config/api';
 
-interface HomepageStore extends LoadingState {
+interface HomepageStore {
   // ===== TOP SECTION STATE =====
   homepageData: HomepageResponse | null;
   farmersBundle: HomepageSection<FarmersBundleItem> | null;
@@ -40,9 +39,8 @@ interface HomepageStore extends LoadingState {
     mid: number | null;
     bottom: number | null;
   };
-  cacheTimeout: number; // in milliseconds
 
-  // Loading states for individual sections
+  // Loading states
   loadingStates: {
     homepage: boolean;
     farmersBundle: boolean;
@@ -57,7 +55,7 @@ interface HomepageStore extends LoadingState {
     popularProductsBottom: boolean;
   };
 
-  // Error states for individual sections
+  // Error states
   errorStates: {
     homepage: string | null;
     farmersBundle: string | null;
@@ -73,30 +71,8 @@ interface HomepageStore extends LoadingState {
   };
 
   // Actions
-  setHomepageData: (data: HomepageResponse) => void;
-  setFarmersBundle: (data: HomepageSection<FarmersBundleItem>) => void;
-  setProblemSolution: (data: HomepageSection<ProblemSolutionItem>) => void;
-  setBrands: (data: HomepageSection<BrandItem>) => void;
-
-  // Mid section actions
-  setHomepageMidData: (data: HomepageMidResponse) => void;
-  setYouTubeVideos: (data: HomepageSection<YouTubeVideoItem>) => void;
-  setCrops: (data: HomepageSection<CropItem>) => void;
-  setSeeds: (data: HomepageSection<SeedItem>) => void;
-
-  // Bottom section actions
-  setHomepageBottomData: (data: HomepageBottomResponse) => void;
-  setUpcomingProducts: (data: HomepageSection<SeedItem>) => void;
-  setPopularProductsBottom: (data: HomepageSection<SeedItem>) => void;
-
-  setLoading: (
-    section: keyof HomepageStore["loadingStates"],
-    loading: boolean
-  ) => void;
-  setError: (
-    section: keyof HomepageStore["errorStates"],
-    error: string | null
-  ) => void;
+  setLoading: (section: keyof HomepageStore['loadingStates'], loading: boolean) => void;
+  setError: (section: keyof HomepageStore['errorStates'], error: string | null) => void;
 
   // API Actions
   fetchHomepageData: () => Promise<void>;
@@ -104,23 +80,21 @@ interface HomepageStore extends LoadingState {
   fetchProblemSolution: () => Promise<void>;
   fetchBrands: () => Promise<void>;
 
-  // Mid API Actions
   fetchHomepageMidData: () => Promise<void>;
   fetchYouTubeVideos: () => Promise<void>;
   fetchCrops: () => Promise<void>;
   fetchSeeds: () => Promise<void>;
 
-  // Bottom API Actions
   fetchHomepageBottomData: () => Promise<void>;
   fetchUpcomingProducts: () => Promise<void>;
   fetchPopularProductsBottom: () => Promise<void>;
 
-  // ===== UTILITY ACTIONS =====
+  // Utility Actions
+  fetchAllSections: () => Promise<void>;
   refreshAllSections: () => Promise<void>;
   clearErrors: () => void;
   clearCache: () => void;
-  isCacheValid: (section: "top" | "mid" | "bottom") => boolean;
-  fetchAllSections: () => Promise<void>;
+  isCacheValid: (section: 'top' | 'mid' | 'bottom') => boolean;
 }
 
 export const useHomepageStore = create<HomepageStore>()(
@@ -138,16 +112,12 @@ export const useHomepageStore = create<HomepageStore>()(
       homepageBottomData: null,
       upcomingProducts: null,
       popularProductsBottom: null,
-      isLoading: false,
-      error: null,
 
-      // Cache state
       lastFetched: {
         top: null,
         mid: null,
         bottom: null,
       },
-      cacheTimeout: getApiConfig().cache.defaultTTL,
 
       loadingStates: {
         homepage: false,
@@ -177,25 +147,7 @@ export const useHomepageStore = create<HomepageStore>()(
         popularProductsBottom: null,
       },
 
-      // Basic Actions
-      setHomepageData: (homepageData) => set({ homepageData }),
-      setFarmersBundle: (farmersBundle) => set({ farmersBundle }),
-      setProblemSolution: (problemSolution) => set({ problemSolution }),
-      setBrands: (brands) => set({ brands }),
-
-      // Mid section actions
-      setHomepageMidData: (homepageMidData) => set({ homepageMidData }),
-      setYouTubeVideos: (youtubeVideos) => set({ youtubeVideos }),
-      setCrops: (crops) => set({ crops }),
-      setSeeds: (seeds) => set({ seeds }),
-
-      // Bottom section actions
-      setHomepageBottomData: (homepageBottomData) =>
-        set({ homepageBottomData }),
-      setUpcomingProducts: (upcomingProducts) => set({ upcomingProducts }),
-      setPopularProductsBottom: (popularProductsBottom) =>
-        set({ popularProductsBottom }),
-
+      // ===== ACTIONS =====
       setLoading: (section, loading) =>
         set((state) => ({
           loadingStates: { ...state.loadingStates, [section]: loading },
@@ -210,299 +162,238 @@ export const useHomepageStore = create<HomepageStore>()(
       fetchHomepageData: async () => {
         const { setLoading, setError, isCacheValid } = get();
 
-        // Check cache first
-        if (isCacheValid("top")) {
-          return;
-        }
+        if (isCacheValid('top')) return;
 
-        setLoading("homepage", true);
-        setError("homepage", null);
+        setLoading('homepage', true);
+        setError('homepage', null);
 
-        try {
-          const data = await homepageService.getHomepageSections();
+        const response = await homepageService.getTopSection();
 
+        if (response.success && response.res) {
+          const data = response.res;
           set((state) => ({
             homepageData: data,
             farmersBundle: data.farmers_bundle,
             problemSolution: data.prob_solution,
             brands: data.brand,
-            lastFetched: {
-              ...state.lastFetched,
-              top: Date.now(),
-            },
+            lastFetched: { ...state.lastFetched, top: Date.now() },
           }));
-
-          setLoading("homepage", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch homepage data";
-          setError("homepage", errorMessage);
-          setLoading("homepage", false);
+        } else {
+          setError('homepage', response.error || 'Failed to fetch homepage data');
         }
+
+        setLoading('homepage', false);
       },
 
       fetchFarmersBundle: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("farmersBundle", true);
-        setError("farmersBundle", null);
+        setLoading('farmersBundle', true);
+        setError('farmersBundle', null);
 
-        try {
-          const data = await homepageService.getFarmersBundle();
-          set({ farmersBundle: data });
-          setLoading("farmersBundle", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch farmers bundle";
-          setError("farmersBundle", errorMessage);
-          setLoading("farmersBundle", false);
+        const response = await homepageService.getTopSection();
+
+        if (response.success && response.res) {
+          set({ farmersBundle: response.res.farmers_bundle });
+        } else {
+          setError('farmersBundle', response.error || 'Failed to fetch farmers bundle');
         }
+
+        setLoading('farmersBundle', false);
       },
 
       fetchProblemSolution: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("problemSolution", true);
-        setError("problemSolution", null);
+        setLoading('problemSolution', true);
+        setError('problemSolution', null);
 
-        try {
-          const data = await homepageService.getProblemSolution();
-          set({ problemSolution: data });
-          setLoading("problemSolution", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch problem solution";
-          setError("problemSolution", errorMessage);
-          setLoading("problemSolution", false);
+        const response = await homepageService.getTopSection();
+
+        if (response.success && response.res) {
+          set({ problemSolution: response.res.prob_solution });
+        } else {
+          setError('problemSolution', response.error || 'Failed to fetch problem solution');
         }
+
+        setLoading('problemSolution', false);
       },
 
       fetchBrands: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("brands", true);
-        setError("brands", null);
+        setLoading('brands', true);
+        setError('brands', null);
 
-        try {
-          const data = await homepageService.getBrands();
-          set({ brands: data });
-          setLoading("brands", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Failed to fetch brands";
-          setError("brands", errorMessage);
-          setLoading("brands", false);
+        const response = await homepageService.getTopSection();
+
+        if (response.success && response.res) {
+          set({ brands: response.res.brand });
+        } else {
+          setError('brands', response.error || 'Failed to fetch brands');
         }
+
+        setLoading('brands', false);
       },
 
       // ===== MID SECTION API ACTIONS =====
       fetchHomepageMidData: async () => {
         const { setLoading, setError, isCacheValid } = get();
 
-        // Check cache first
-        if (isCacheValid("mid")) {
-          return;
-        }
+        if (isCacheValid('mid')) return;
 
-        setLoading("homepageMid", true);
-        setError("homepageMid", null);
+        setLoading('homepageMid', true);
+        setError('homepageMid', null);
 
-        try {
-          const data = await homepageService.getHomepageMidSections();
+        const response = await homepageService.getMidSection();
 
+        if (response.success && response.res) {
+          const data = response.res;
           set((state) => ({
             homepageMidData: data,
             youtubeVideos: data.youtube_video,
             crops: data.crop,
             seeds: data.seed,
-            lastFetched: {
-              ...state.lastFetched,
-              mid: Date.now(),
-            },
+            lastFetched: { ...state.lastFetched, mid: Date.now() },
           }));
-
-          setLoading("homepageMid", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch homepage mid data";
-          setError("homepageMid", errorMessage);
-          setLoading("homepageMid", false);
+        } else {
+          setError('homepageMid', response.error || 'Failed to fetch mid section');
         }
+
+        setLoading('homepageMid', false);
       },
 
       fetchYouTubeVideos: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("youtubeVideos", true);
-        setError("youtubeVideos", null);
+        setLoading('youtubeVideos', true);
+        setError('youtubeVideos', null);
 
-        try {
-          const data = await homepageService.getYouTubeVideos();
-          set({ youtubeVideos: data });
-          setLoading("youtubeVideos", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch YouTube videos";
-          setError("youtubeVideos", errorMessage);
-          setLoading("youtubeVideos", false);
+        const response = await homepageService.getMidSection();
+
+        if (response.success && response.res) {
+          set({ youtubeVideos: response.res.youtube_video });
+        } else {
+          setError('youtubeVideos', response.error || 'Failed to fetch YouTube videos');
         }
+
+        setLoading('youtubeVideos', false);
       },
 
       fetchCrops: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("crops", true);
-        setError("crops", null);
+        setLoading('crops', true);
+        setError('crops', null);
 
-        try {
-          const data = await homepageService.getCrops();
-          set({ crops: data });
-          setLoading("crops", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Failed to fetch crops";
-          setError("crops", errorMessage);
-          setLoading("crops", false);
+        const response = await homepageService.getMidSection();
+
+        if (response.success && response.res) {
+          set({ crops: response.res.crop });
+        } else {
+          setError('crops', response.error || 'Failed to fetch crops');
         }
+
+        setLoading('crops', false);
       },
 
       fetchSeeds: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("seeds", true);
-        setError("seeds", null);
+        setLoading('seeds', true);
+        setError('seeds', null);
 
-        try {
-          const data = await homepageService.getSeeds();
-          set({ seeds: data });
-          setLoading("seeds", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Failed to fetch seeds";
-          setError("seeds", errorMessage);
-          setLoading("seeds", false);
+        const response = await homepageService.getMidSection();
+
+        if (response.success && response.res) {
+          set({ seeds: response.res.seed });
+        } else {
+          setError('seeds', response.error || 'Failed to fetch seeds');
         }
+
+        setLoading('seeds', false);
       },
 
       // ===== BOTTOM SECTION API ACTIONS =====
       fetchHomepageBottomData: async () => {
         const { setLoading, setError, isCacheValid } = get();
 
-        // Check cache first
-        if (isCacheValid("bottom")) {
-          return;
-        }
+        if (isCacheValid('bottom')) return;
 
-        setLoading("homepageBottom", true);
-        setError("homepageBottom", null);
+        setLoading('homepageBottom', true);
+        setError('homepageBottom', null);
 
-        try {
-          const data = await homepageService.getHomepageBottomSections();
+        const response = await homepageService.getBottomSection();
 
+        if (response.success && response.res) {
+          const data = response.res;
           set((state) => ({
             homepageBottomData: data,
             upcomingProducts: data.products_upcoming,
             popularProductsBottom: data.popular_products,
-            lastFetched: {
-              ...state.lastFetched,
-              bottom: Date.now(),
-            },
+            lastFetched: { ...state.lastFetched, bottom: Date.now() },
           }));
-
-          setLoading("homepageBottom", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch homepage bottom data";
-          setError("homepageBottom", errorMessage);
-          setLoading("homepageBottom", false);
+        } else {
+          setError('homepageBottom', response.error || 'Failed to fetch bottom section');
         }
+
+        setLoading('homepageBottom', false);
       },
 
       fetchUpcomingProducts: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("upcomingProducts", true);
-        setError("upcomingProducts", null);
+        setLoading('upcomingProducts', true);
+        setError('upcomingProducts', null);
 
-        try {
-          const data = await homepageService.getUpcomingProducts();
-          set({ upcomingProducts: data });
-          setLoading("upcomingProducts", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch upcoming products";
-          setError("upcomingProducts", errorMessage);
-          setLoading("upcomingProducts", false);
+        const response = await homepageService.getBottomSection();
+
+        if (response.success && response.res) {
+          set({ upcomingProducts: response.res.products_upcoming });
+        } else {
+          setError('upcomingProducts', response.error || 'Failed to fetch upcoming products');
         }
+
+        setLoading('upcomingProducts', false);
       },
 
       fetchPopularProductsBottom: async () => {
         const { setLoading, setError } = get();
 
-        setLoading("popularProductsBottom", true);
-        setError("popularProductsBottom", null);
+        setLoading('popularProductsBottom', true);
+        setError('popularProductsBottom', null);
 
-        try {
-          const data = await homepageService.getPopularProductsBottom();
-          set({ popularProductsBottom: data });
-          setLoading("popularProductsBottom", false);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to fetch popular products";
-          setError("popularProductsBottom", errorMessage);
-          setLoading("popularProductsBottom", false);
+        const response = await homepageService.getBottomSection();
+
+        if (response.success && response.res) {
+          set({ popularProductsBottom: response.res.popular_products });
+        } else {
+          setError('popularProductsBottom', response.error || 'Failed to fetch popular products');
         }
+
+        setLoading('popularProductsBottom', false);
       },
 
       // ===== UTILITY METHODS =====
-      isCacheValid: (section: "top" | "mid" | "bottom") => {
-        const { lastFetched, cacheTimeout } = get();
+      isCacheValid: (section: 'top' | 'mid' | 'bottom') => {
+        const { lastFetched } = get();
         const lastFetchTime = lastFetched[section];
         if (!lastFetchTime) return false;
-        return Date.now() - lastFetchTime < cacheTimeout;
+        return Date.now() - lastFetchTime < CACHE_CONFIG.defaultTTL;
       },
 
       clearCache: () =>
         set({
-          lastFetched: {
-            top: null,
-            mid: null,
-            bottom: null,
-          },
+          lastFetched: { top: null, mid: null, bottom: null },
         }),
 
       fetchAllSections: async () => {
-        const {
-          fetchHomepageData,
-          fetchHomepageMidData,
-          fetchHomepageBottomData,
-        } = get();
-        try {
-          await Promise.all([
-            fetchHomepageData(),
-            fetchHomepageMidData(),
-            fetchHomepageBottomData(),
-          ]);
-        } catch (error) {
-          console.error("Failed to fetch all sections:", error);
-          throw error;
-        }
+        const { fetchHomepageData, fetchHomepageMidData, fetchHomepageBottomData } = get();
+        await Promise.all([
+          fetchHomepageData(),
+          fetchHomepageMidData(),
+          fetchHomepageBottomData(),
+        ]);
       },
 
       refreshAllSections: async () => {
@@ -528,8 +419,6 @@ export const useHomepageStore = create<HomepageStore>()(
           },
         }),
     }),
-    {
-      name: "homepage-store",
-    }
+    { name: 'homepage-store' }
   )
 );

@@ -33,8 +33,11 @@ export const useSimilarProductsStore = create<SimilarProductsStore>()(
                 }
 
                 set({ isLoading: true, error: null });
-                try {
-                    const products = await productService.getSimilarProducts(productId);
+
+                const response = await productService.getSimilarProducts(productId);
+
+                if (response.success && response.res) {
+                    const products = response.res;
                     set((state) => ({
                         similarProductsCache: {
                             ...state.similarProductsCache,
@@ -42,12 +45,9 @@ export const useSimilarProductsStore = create<SimilarProductsStore>()(
                         },
                         isLoading: false,
                     }));
-                } catch (error) {
+                } else {
                     set({
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : "Failed to fetch similar products",
+                        error: response.error || "Failed to fetch similar products",
                         isLoading: false,
                     });
                 }

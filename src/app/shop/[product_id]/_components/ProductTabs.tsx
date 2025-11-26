@@ -269,7 +269,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
               </div>
             ) : (
               <div className="flex justify-center">
-                <div className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-green-100 to-green-50">
+                <div className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden  from-green-100 to-green-50">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <p className="text-gray-500 text-sm">No video available</p>
                   </div>

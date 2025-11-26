@@ -1,4 +1,6 @@
-import { Category } from "@/types/category";
+import axiosInstance, { apiCall, ApiResponse } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/config/api';
+import { Category } from '@/types/category';
 
 export interface SearchDropdownResponse {
   categories: Category[];
@@ -8,48 +10,86 @@ export interface SearchDropdownResponse {
 
 export const categoryService = {
   // Get all categories, brands, and crops from the search dropdown API
-  async getSearchDropdownData(): Promise<SearchDropdownResponse> {
-    const response = await fetch(
-      "https://e6lt9wjit7.execute-api.ap-south-1.amazonaws.com/dev/product/list-for-search-dropdown"
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch search dropdown data");
-    }
-    return response.json();
+  async getSearchDropdownData(): Promise<ApiResponse<SearchDropdownResponse>> {
+    const url = `${API_ENDPOINTS.products.base}${API_ENDPOINTS.products.filters}`;
+    return apiCall<SearchDropdownResponse>(() => axiosInstance.get(url));
   },
 
   // Get all categories with nested subcategories
-  async getCategories(): Promise<Category[]> {
-    const data = await this.getSearchDropdownData();
-    return data.categories;
+  async getCategories(): Promise<ApiResponse<Category[]>> {
+    const response = await this.getSearchDropdownData();
+    if (response.success && response.res) {
+      return {
+        success: true,
+        res: response.res.categories,
+      };
+    }
+    return {
+      success: false,
+      error: response.error || 'Failed to fetch categories',
+    };
   },
 
   // Get all brands
-  async getBrands(): Promise<Array<{ brand_id: number; brand_name: string }>> {
-    const data = await this.getSearchDropdownData();
-    return data.brands;
+  async getBrands(): Promise<ApiResponse<Array<{ brand_id: number; brand_name: string }>>> {
+    const response = await this.getSearchDropdownData();
+    if (response.success && response.res) {
+      return {
+        success: true,
+        res: response.res.brands,
+      };
+    }
+    return {
+      success: false,
+      error: response.error || 'Failed to fetch brands',
+    };
   },
 
   // Get all crops
-  async getCrops(): Promise<Array<{ crop_id: number; crop_name: string }>> {
-    const data = await this.getSearchDropdownData();
-    return data.crops;
+  async getCrops(): Promise<ApiResponse<Array<{ crop_id: number; crop_name: string }>>> {
+    const response = await this.getSearchDropdownData();
+    if (response.success && response.res) {
+      return {
+        success: true,
+        res: response.res.crops,
+      };
+    }
+    return {
+      success: false,
+      error: response.error || 'Failed to fetch crops',
+    };
   },
 
   // Get featured categories (top-level only)
-  async getFeaturedCategories(): Promise<Category[]> {
-    const categories = await this.getCategories();
-    return categories.filter(
-      (cat) =>
-        cat.category_name === "Fertilizers" ||
-        cat.category_name === "Seeds" ||
-        cat.category_name === "Pesticides"
-    );
+  async getFeaturedCategories(): Promise<ApiResponse<Category[]>> {
+    const response = await this.getCategories();
+    if (response.success && response.res) {
+      const featured = response.res.filter(
+        (cat) =>
+          cat.category_name === 'Fertilizers' ||
+          cat.category_name === 'Seeds' ||
+          cat.category_name === 'Pesticides'
+      );
+      return {
+        success: true,
+        res: featured,
+      };
+    }
+    return {
+      success: false,
+      error: response.error || 'Failed to fetch featured categories',
+    };
   },
 
   // Get single category by ID (searches recursively through subcategories)
-  async getCategory(id: number): Promise<Category | undefined> {
-    const categories = await this.getCategories();
+  async getCategory(id: number): Promise<ApiResponse<Category | undefined>> {
+    const response = await this.getCategories();
+    if (!response.success || !response.res) {
+      return {
+        success: false,
+        error: response.error || 'Failed to fetch categories',
+      };
+    }
 
     const findCategory = (cats: Category[]): Category | undefined => {
       for (const cat of cats) {
@@ -62,12 +102,21 @@ export const categoryService = {
       return undefined;
     };
 
-    return findCategory(categories);
+    return {
+      success: true,
+      res: findCategory(response.res),
+    };
   },
 
   // Get category by name (searches recursively through subcategories)
-  async getCategoryByName(name: string): Promise<Category | undefined> {
-    const categories = await this.getCategories();
+  async getCategoryByName(name: string): Promise<ApiResponse<Category | undefined>> {
+    const response = await this.getCategories();
+    if (!response.success || !response.res) {
+      return {
+        success: false,
+        error: response.error || 'Failed to fetch categories',
+      };
+    }
 
     const findCategory = (cats: Category[]): Category | undefined => {
       for (const cat of cats) {
@@ -80,7 +129,10 @@ export const categoryService = {
       return undefined;
     };
 
-    return findCategory(categories);
+    return {
+      success: true,
+      res: findCategory(response.res),
+    };
   },
 
   // Flatten all categories including subcategories into a single array
@@ -101,8 +153,17 @@ export const categoryService = {
   },
 
   // Get all flattened categories
-  async getAllCategoriesFlat(): Promise<Category[]> {
-    const categories = await this.getCategories();
-    return this.flattenCategories(categories);
+  async getAllCategoriesFlat(): Promise<ApiResponse<Category[]>> {
+    const response = await this.getCategories();
+    if (response.success && response.res) {
+      return {
+        success: true,
+        res: this.flattenCategories(response.res),
+      };
+    }
+    return {
+      success: false,
+      error: response.error || 'Failed to fetch categories',
+    };
   },
 };

@@ -1,16 +1,18 @@
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
-import ProductDetailsClient from "./_components/ProductDetailsClient";
-import { productService } from "@/services/productService";
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import ProductDetailsClient from './_components/ProductDetailsClient';
+import { productService } from '@/services/productService';
+import { Product } from '@/types/product';
 
-async function getProductDetails(productId: string) {
-    try {
-        const product = await productService.getProductById(productId);
-        return product;
-    } catch (error) {
-        console.error("Error fetching product details:", error);
-        return null;
+async function getProductDetails(productId: string): Promise<Product | null> {
+    const response = await productService.getProductById(productId);
+
+    if (response.success && response.res) {
+        return response.res;
     }
+
+    console.error('Error fetching product details:', response.error);
+    return null;
 }
 
 export async function generateMetadata({
@@ -23,7 +25,7 @@ export async function generateMetadata({
 
     if (!product) {
         return {
-            title: "Product Not Found",
+            title: 'Product Not Found',
         };
     }
 

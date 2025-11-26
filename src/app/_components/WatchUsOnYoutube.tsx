@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useHomepageStore } from "@/store/useHomepageStore";
 import { YouTubeVideoItem } from "@/types/homepage";
 import LeftArrowIcon from "@/icons/LeftArrowIcon";
@@ -8,6 +8,11 @@ import RightArrowIcon from "@/icons/RightArrowIcon";
 
 export default function WatchUsOnYoutube() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const mouseStartX = useRef<number>(0);
+  const mouseEndX = useRef<number>(0);
+  const isDragging = useRef<boolean>(false);
 
   const { youtubeVideos, loadingStates, errorStates, fetchYouTubeVideos } =
     useHomepageStore();
@@ -68,9 +73,127 @@ export default function WatchUsOnYoutube() {
     setCurrentSlide(index);
   };
 
+  // Handle touch start
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  // Handle touch move
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  // Handle touch end - detect swipe direction (mobile)
+  const handleTouchEndMobile = () => {
+    const swipeThreshold = 100;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextVideoMobile();
+      } else {
+        prevVideoMobile();
+      }
+    }
+  };
+
+  // Handle touch end - detect swipe direction (desktop)
+  const handleTouchEndDesktop = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+  };
+
+  // Handle mouse down
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true;
+    mouseStartX.current = e.clientX;
+  };
+
+  // Handle mouse move
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging.current) {
+      mouseEndX.current = e.clientX;
+    }
+  };
+
+  // Handle mouse up - detect drag direction (mobile)
+  const handleMouseUpMobile = () => {
+    if (!isDragging.current) return;
+
+    isDragging.current = false;
+    const swipeThreshold = 50;
+    const diff = mouseStartX.current - mouseEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextVideoMobile();
+      } else {
+        prevVideoMobile();
+      }
+    }
+  };
+
+  // Handle mouse up - detect drag direction (desktop)
+  const handleMouseUpDesktop = () => {
+    if (!isDragging.current) return;
+
+    isDragging.current = false;
+    const swipeThreshold = 50;
+    const diff = mouseStartX.current - mouseEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+  };
+
+  // Handle mouse leave - reset dragging
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+  };
+
+  // Handle wheel event for trackpad horizontal scroll (mobile)
+  const handleWheelMobile = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      const threshold = 30;
+
+      if (e.deltaX > threshold) {
+        nextVideoMobile();
+      } else if (e.deltaX < -threshold) {
+        prevVideoMobile();
+      }
+    }
+  };
+
+  // Handle wheel event for trackpad horizontal scroll (desktop)
+  const handleWheelDesktop = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      const threshold = 30;
+
+      if (e.deltaX > threshold) {
+        nextSlide();
+      } else if (e.deltaX < -threshold) {
+        prevSlide();
+      }
+    }
+  };
+
   return (
     <section
-      className="py-12 sm:py-16 lg:py-20 relative border-b border-b-dimGray_01"
+      className="py-12 sm:py-16 lg:py-20 relative border-b border-b-dimGray_01 bg-no-repeat"
       style={{ backgroundImage: "url(/images/youtube_bg_image.png)" }}
     >
       {/* Background overlay for better content readability */}
@@ -112,7 +235,17 @@ export default function WatchUsOnYoutube() {
           <>
             {/* Mobile Layout - Single Video with Navigation */}
             <div className="block lg:hidden">
-              <div className="relative">
+              <div
+                className="relative select-none cursor-grab active:cursor-grabbing"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEndMobile}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUpMobile}
+                onMouseLeave={handleMouseLeave}
+                onWheel={handleWheelMobile}
+              >
                 {/* Video Container */}
                 <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-sm mx-auto">
                   {/* Video Thumbnail */}
@@ -192,7 +325,17 @@ export default function WatchUsOnYoutube() {
 
             {/* Desktop Layout - Sliding 4 Videos */}
             <div className="hidden lg:block">
-              <div className="relative overflow-hidden mb-8">
+              <div
+                className="relative overflow-hidden mb-8 select-none cursor-grab active:cursor-grabbing"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEndDesktop}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUpDesktop}
+                onMouseLeave={handleMouseLeave}
+                onWheel={handleWheelDesktop}
+              >
                 <div
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{

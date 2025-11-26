@@ -58,16 +58,16 @@ export const useCategoryStore = create<CategoryStore>()(
       // API Actions
       fetchCategories: async () => {
         set({ isLoading: true, error: null });
-        try {
-          const categories = await categoryService.getCategories();
+
+        const response = await categoryService.getCategories();
+
+        if (response.success && response.res) {
+          const categories = response.res;
           const flatCategories = categoryService.flattenCategories(categories);
           set({ categories, flatCategories, isLoading: false });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch categories",
+            error: response.error || "Failed to fetch categories",
             isLoading: false,
           });
         }
@@ -75,15 +75,14 @@ export const useCategoryStore = create<CategoryStore>()(
 
       fetchFeaturedCategories: async () => {
         set({ isLoading: true, error: null });
-        try {
-          const categories = await categoryService.getFeaturedCategories();
-          set({ featuredCategories: categories, isLoading: false });
-        } catch (error) {
+
+        const response = await categoryService.getFeaturedCategories();
+
+        if (response.success && response.res) {
+          set({ featuredCategories: response.res, isLoading: false });
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch featured categories",
+            error: response.error || "Failed to fetch featured categories",
             isLoading: false,
           });
         }
@@ -91,15 +90,14 @@ export const useCategoryStore = create<CategoryStore>()(
 
       fetchCategory: async (id) => {
         set({ isLoading: true, error: null });
-        try {
-          const category = await categoryService.getCategory(id);
-          set({ currentCategory: category || null, isLoading: false });
-        } catch (error) {
+
+        const response = await categoryService.getCategory(id);
+
+        if (response.success) {
+          set({ currentCategory: response.res || null, isLoading: false });
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch category",
+            error: response.error || "Failed to fetch category",
             isLoading: false,
           });
         }
@@ -107,50 +105,42 @@ export const useCategoryStore = create<CategoryStore>()(
 
       fetchCategoryByName: async (name) => {
         set({ isLoading: true, error: null });
-        try {
-          const category = await categoryService.getCategoryByName(name);
-          set({ currentCategory: category || null, isLoading: false });
-        } catch (error) {
+
+        const response = await categoryService.getCategoryByName(name);
+
+        if (response.success) {
+          set({ currentCategory: response.res || null, isLoading: false });
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch category",
+            error: response.error || "Failed to fetch category",
             isLoading: false,
           });
         }
       },
 
       fetchCategoriesBrandsAndCrops: async () => {
-        const { categories, brands, crops, isLoading } = get();
-
-        // Skip if already loaded or currently loading
-        if (
-          (categories.length > 0 && brands.length > 0 && crops.length > 0) ||
-          isLoading
-        ) {
-          return;
-        }
-
+        console.log("🔍 Fetching categories, brands, and crops...");
         set({ isLoading: true, error: null });
-        try {
-          const data = await categoryService.getSearchDropdownData();
+
+        const response = await categoryService.getSearchDropdownData();
+
+        if (response.success && response.res) {
+          const data = response.res;
           const flatCategories = categoryService.flattenCategories(
             data.categories
           );
+
           set({
-            categories: data.categories,
+            categories: data.categories || [],
             flatCategories,
-            brands: data.brands,
-            crops: data.crops,
+            brands: data.brands || [],
+            crops: data.crops || [],
             isLoading: false,
           });
-        } catch (error) {
+        } else {
+          console.error("❌ Failed to fetch data:", response.error);
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch dropdown data",
+            error: response.error || "Failed to fetch dropdown data",
             isLoading: false,
           });
         }

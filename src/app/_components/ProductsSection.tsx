@@ -50,7 +50,7 @@ export default function ProductsSection() {
             </p>
           </div>
           <Button
-            className="hidden w-[251px] h-12 font-semibold text-[16px] bg-green-800 hover:bg-green-900 text-white px-4 rounded-lg lg:flex items-center justify-center gap-2 text-sm"
+            className="hidden w-[251px] h-12 font-semibold text-[16px] bg-green-800 hover:bg-green-900 text-white px-4 rounded-lg md:flex items-center justify-center gap-2 text-sm"
             disabled
           >
             Add All Items to Bag <ShoppingBagIcon />
@@ -183,7 +183,7 @@ export default function ProductsSection() {
           </div>
         )}
         <Button
-          className="flex w-[251px] mt-5 mx-auto h-12 font-semibold text-[16px] bg-green-800 hover:bg-green-900 text-white px-4 rounded-lg lg:hidden items-center justify-center gap-2 text-sm"
+          className="flex w-[251px] mt-5 mx-auto h-12 font-semibold text-[16px] bg-primary hover:bg-green-900 text-white px-4 rounded-lg md:hidden items-center justify-center gap-2 text-sm"
           disabled
         >
           Add All Items to Bag <ShoppingBagIcon />

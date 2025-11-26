@@ -1,11 +1,11 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   Product,
   ProductsQueryParams,
   ProductFilters,
-} from "@/types/product";
-import { productService } from "@/services/productService";
+} from '@/types/product';
+import { productService } from '@/services/productService';
 
 interface ProductStore {
   // State
@@ -69,14 +69,17 @@ export const useProductStore = create<ProductStore>()(
       // API Actions
       fetchProducts: async (params = {}) => {
         set({ isLoading: true, error: null });
-        try {
-          const queryParams = {
-            skip: 0,
-            limit: ITEMS_PER_PAGE,
-            ...params,
-          };
 
-          const products = await productService.getProducts(queryParams);
+        const queryParams = {
+          skip: 0,
+          limit: ITEMS_PER_PAGE,
+          ...params,
+        };
+
+        const response = await productService.getProducts(queryParams);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -86,12 +89,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch products",
+            error: response.error || 'Failed to fetch products',
             isLoading: false,
           });
         }
@@ -103,15 +103,18 @@ export const useProductStore = create<ProductStore>()(
         if (isLoading) return;
 
         set({ isLoading: true, error: null });
-        try {
-          const nextPage = currentPage + 1;
-          const queryParams = {
-            ...currentFilters,
-            skip: nextPage * ITEMS_PER_PAGE,
-            limit: ITEMS_PER_PAGE,
-          };
 
-          const newProducts = await productService.getProducts(queryParams);
+        const nextPage = currentPage + 1;
+        const queryParams = {
+          ...currentFilters,
+          skip: nextPage * ITEMS_PER_PAGE,
+          limit: ITEMS_PER_PAGE,
+        };
+
+        const response = await productService.getProducts(queryParams);
+
+        if (response.success && response.res) {
+          const newProducts = response.res;
           const allProducts = [...products, ...newProducts];
 
           set({
@@ -121,12 +124,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: newProducts.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch more products",
+            error: response.error || 'Failed to fetch more products',
             isLoading: false,
           });
         }
@@ -134,11 +134,11 @@ export const useProductStore = create<ProductStore>()(
 
       searchProducts: async (searchTerm) => {
         set({ isLoading: true, error: null });
-        try {
-          const products = await productService.searchProducts(
-            searchTerm,
-            ITEMS_PER_PAGE
-          );
+
+        const response = await productService.searchProducts(searchTerm, ITEMS_PER_PAGE);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -147,12 +147,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to search products",
+            error: response.error || 'Failed to search products',
             isLoading: false,
           });
         }
@@ -160,11 +157,11 @@ export const useProductStore = create<ProductStore>()(
 
       fetchProductsByCategory: async (category) => {
         set({ isLoading: true, error: null });
-        try {
-          const products = await productService.getProductsByCategory(
-            category,
-            ITEMS_PER_PAGE
-          );
+
+        const response = await productService.getProductsByCategory(category, ITEMS_PER_PAGE);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -173,12 +170,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch products by category",
+            error: response.error || 'Failed to fetch products by category',
             isLoading: false,
           });
         }
@@ -186,11 +180,11 @@ export const useProductStore = create<ProductStore>()(
 
       fetchProductsByBrand: async (brand) => {
         set({ isLoading: true, error: null });
-        try {
-          const products = await productService.getProductsByBrand(
-            brand,
-            ITEMS_PER_PAGE
-          );
+
+        const response = await productService.getProductsByBrand(brand, ITEMS_PER_PAGE);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -199,12 +193,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch products by brand",
+            error: response.error || 'Failed to fetch products by brand',
             isLoading: false,
           });
         }
@@ -212,11 +203,11 @@ export const useProductStore = create<ProductStore>()(
 
       fetchProductsByCrop: async (crop) => {
         set({ isLoading: true, error: null });
-        try {
-          const products = await productService.getProductsByCrop(
-            crop,
-            ITEMS_PER_PAGE
-          );
+
+        const response = await productService.getProductsByCrop(crop, ITEMS_PER_PAGE);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -225,12 +216,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to fetch products by crop",
+            error: response.error || 'Failed to fetch products by crop',
             isLoading: false,
           });
         }
@@ -244,11 +232,10 @@ export const useProductStore = create<ProductStore>()(
           return;
         }
 
-        try {
-          const filters = await productService.getProductFilters();
-          set({ filters });
-        } catch (error) {
-          console.error("Failed to fetch product filters:", error);
+        const response = await productService.getProductFilters();
+
+        if (response.success && response.res) {
+          set({ filters: response.res });
         }
       },
 
@@ -284,20 +271,22 @@ export const useProductStore = create<ProductStore>()(
           normalize(state.currentFilters.max_price) === normalize(filters.max_price);
 
         // Skip ONLY if same filters AND products already loaded
-        // This ensures initial load always happens
         if (isSameFilters && state.products.length > 0) {
           return;
         }
 
         set({ isLoading: true, error: null });
-        try {
-          const queryParams = {
-            ...filters,
-            skip: 0,
-            limit: ITEMS_PER_PAGE,
-          };
 
-          const products = await productService.getProducts(queryParams);
+        const queryParams = {
+          ...filters,
+          skip: 0,
+          limit: ITEMS_PER_PAGE,
+        };
+
+        const response = await productService.getProducts(queryParams);
+
+        if (response.success && response.res) {
+          const products = response.res;
           set({
             products,
             filteredProducts: products,
@@ -306,12 +295,9 @@ export const useProductStore = create<ProductStore>()(
             hasMore: products.length === ITEMS_PER_PAGE,
             isLoading: false,
           });
-        } catch (error) {
+        } else {
           set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to apply filters",
+            error: response.error || 'Failed to apply filters',
             isLoading: false,
           });
         }
@@ -337,7 +323,7 @@ export const useProductStore = create<ProductStore>()(
       },
     }),
     {
-      name: "product-store",
+      name: 'product-store',
     }
   )
 );

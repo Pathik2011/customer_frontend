@@ -14,6 +14,17 @@
   scroll-behavior: smooth;
 }
 
+/* Navigation scroll container */
+.nav-scroll-container {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-scroll-container > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
 /* Animation classes for dropdowns */
 @keyframes fade-in {
   from {

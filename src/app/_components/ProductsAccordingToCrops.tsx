@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useHomepageStore } from "@/store/useHomepageStore";
 import { CropItem } from "@/types/homepage";
+import Link from "next/link";
 
 export default function ProductsAccordingToCrops() {
   const router = useRouter();
@@ -99,9 +100,7 @@ export default function ProductsAccordingToCrops() {
 
               {/* Right Side - View All Button */}
               <div className="hidden lg:flex justify-center lg:justify-end">
-                <button
-                  onClick={handleViewAll}
-                  className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-colors flex items-center gap-2"
+                <Link href={"/shop"} className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-colors flex items-center gap-2"
                 >
                   View All
                   <svg
@@ -117,7 +116,7 @@ export default function ProductsAccordingToCrops() {
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -172,9 +171,7 @@ export default function ProductsAccordingToCrops() {
             </div>
             {/* Right Side - View All Button */}
             <div className="flex lg:hidden justify-center lg:justify-end">
-              <button
-                onClick={handleViewAll}
-                className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-colors flex items-center gap-2"
+              <Link href={"/shop"} className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-sm sm:text-base transition-colors flex items-center gap-2"
               >
                 View All
                 <svg
@@ -190,7 +187,7 @@ export default function ProductsAccordingToCrops() {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </button>
+              </Link>
             </div>
           </>
         )}

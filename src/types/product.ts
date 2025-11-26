@@ -13,6 +13,7 @@ export interface ProductVariant {
   discount: number;
   discounted_price: number;
   is_active: boolean;
+  product_variant_id?: number;
   variant_id: number;
 }
 

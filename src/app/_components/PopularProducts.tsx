@@ -67,7 +67,7 @@ export default function PopularProducts() {
           {/* Products Grid - Mobile (2 columns) */}
           {!isLoading && !error && (
             <>
-              <div className="w-max mx-auto grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+              <div className="w-max mx-auto grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
                 {products.slice(0, visibleCountMobile).map((product) => (
                   <ProductCart product={product} key={product.product_id} />
                 ))}

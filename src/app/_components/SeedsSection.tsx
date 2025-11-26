@@ -5,6 +5,7 @@ import { useHomepageStore } from "@/store/useHomepageStore";
 import { SeedItem } from "@/types/homepage";
 import RightArrowIcon from "@/icons/RightArrowIcon";
 import ProductCart from "@/components/layout/common/ProductCart";
+import Link from "next/link";
 
 export default function SeedsSection() {
   const {
@@ -71,15 +72,18 @@ export default function SeedsSection() {
               </div>
 
               {/* Seeds Grid - Mobile (2 columns) */}
-              <div className="mx-auto w-max grid grid-cols-2 gap-3 sm:gap-4 mb-8">
-                {seeds.slice(0, 2).map((product: any, index: number) => (
+              <div className="mx-auto w-max grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+                {seeds.map((product: any, index: number) => (
                   <ProductCart product={product} key={index} />
                 ))}
               </div>
 
               {/* View All Button - Mobile */}
               <div className="flex justify-center">
-                <button className="bg-primary hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium text-base transition-colors flex items-center gap-2">
+                <Link
+                  href={"/shop"}
+                  className="bg-primary hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium text-base transition-colors flex items-center gap-2"
+                >
                   View All
                   <svg
                     className="w-4 h-4"
@@ -94,7 +98,7 @@ export default function SeedsSection() {
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -115,15 +119,18 @@ export default function SeedsSection() {
 
                 {/* Right Side - View All Button */}
                 <div>
-                  <button className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-xl font-medium text-base transition-colors flex items-center gap-2">
+                  <Link
+                    href={"/shop"}
+                    className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-xl font-medium text-base transition-colors flex items-center gap-2"
+                  >
                     View All
                     <RightArrowIcon />
-                  </button>
+                  </Link>
                 </div>
               </div>
 
               {/* Seeds Grid - Desktop */}
-              <div className="grid grid-cols-5 gap-6">
+              <div className="grid lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {seeds.map((product: any, index: number) => (
                   <ProductCart product={product} key={index} />
                 ))}

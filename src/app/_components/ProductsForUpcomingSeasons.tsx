@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useHomepageStore } from "@/store/useHomepageStore";
 import { SeedItem } from "@/types/homepage";
 import ProductCart from "@/components/layout/common/ProductCart";
+import Link from "next/link";
 
 export default function ProductsForUpcomingSeasons() {
   const {
@@ -84,15 +85,18 @@ export default function ProductsForUpcomingSeasons() {
               </div>
 
               {/* Products Grid - Mobile (2 columns) */}
-              <div className="w-max mx-auto grid grid-cols-2 gap-3 sm:gap-4 mb-8">
-                {apiItems.slice(0, 2).map((product: any, index) => (
+              <div className="w-max mx-auto grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+                {apiItems.map((product: any, index) => (
                   <ProductCart product={product} key={index} />
                 ))}
               </div>
 
               {/* View All Button - Mobile */}
               <div className="flex justify-center">
-                <button className="bg-primary hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium text-base transition-colors flex items-center gap-2">
+                <Link
+                  href={"/shop"}
+                  className="bg-primary hover:bg-green-900 text-white px-8 py-3 rounded-full font-medium text-base transition-colors flex items-center gap-2"
+                >
                   View All
                   <svg
                     className="w-4 h-4"
@@ -107,7 +111,7 @@ export default function ProductsForUpcomingSeasons() {
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -128,7 +132,10 @@ export default function ProductsForUpcomingSeasons() {
 
                 {/* Right Side - View All Button */}
                 <div>
-                  <button className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors flex items-center gap-2">
+                  <Link
+                    href={"/shop"}
+                    className="bg-primary hover:bg-green-900 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors flex items-center gap-2"
+                  >
                     View All
                     <svg
                       className="w-4 h-4"
@@ -143,7 +150,7 @@ export default function ProductsForUpcomingSeasons() {
                         d="M9 5l7 7-7 7"
                       />
                     </svg>
-                  </button>
+                  </Link>
                 </div>
               </div>
 

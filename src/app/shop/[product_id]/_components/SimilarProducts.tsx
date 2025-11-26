@@ -100,7 +100,7 @@ export default function SimilarProducts({ product_id }: SimilarProductsProps) {
           No similar products found
         </div>
       ) : (
-        <div className="w-max mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="w-max mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-2 xl:grid-cols-5 gap-4">
           {products.map((product) => (
             <ProductCart product={product} key={product.product_id} />
           ))}

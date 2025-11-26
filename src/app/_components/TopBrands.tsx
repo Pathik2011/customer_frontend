@@ -120,7 +120,7 @@ export default function TopBarnds() {
               {/* Main Flex Container */}
               <div className="flex flex-row items-center justify-between gap-4">
                 {/* Left Side - Text Content */}
-                <div className="flex-shrink-0 text-left">
+                <div className="text-left">
                   <h2 className="text-6xl font-[Google Sans] font-medium text-[28px]  text-gray-900 mb-6">
                     {brandsData?.display_title || "Top Brands"}
                   </h2>
@@ -131,7 +131,7 @@ export default function TopBarnds() {
                 </div>
 
                 {/* Right Side - Brands */}
-                <div className="flex-1 max-w-3xl">
+                <div className="flex-1 max-w-xl xl:max-w-3xl">
                   <div className="overflow-x-auto mobile-scroll p-0 scrollbar-hide">
                     <div className="flex items-center gap-16 pb-2 min-w-max">
                       {brands.slice(0, 5).map((brand) => (

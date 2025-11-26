@@ -10,7 +10,7 @@ import { ProductsQueryParams } from "@/types/product";
 export default function ProductFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const hasInitializedProducts = useRef(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -26,6 +26,7 @@ export default function ProductFilter() {
     fetchCategoriesBrandsAndCrops,
     isLoading: categoriesLoading,
   } = useCategoryStore();
+
   const {
     filters,
     applyFilters,
@@ -53,21 +54,30 @@ export default function ProductFilter() {
     router.push(newUrl, { scroll: false });
   };
 
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    }
+
+    if (openDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [openDropdown]);
+
   useEffect(() => {
     fetchCategoriesBrandsAndCrops();
     fetchProductFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Initialize filters from URL params on mount
+  // Initialize filters from URL params and watch for URL changes
   useEffect(() => {
-    // Only run once on initial mount
-    if (hasInitializedProducts.current) {
-      return;
-    }
-
-    hasInitializedProducts.current = true;
-
     // Get all values for multi-select params
     const categories = searchParams.getAll("category");
     const brands = searchParams.getAll("brand");
@@ -82,6 +92,10 @@ export default function ProductFilter() {
     setSelectedBrands(brands);
     setSelectedCrops(crops);
     setSelectedTargetPests(target_pests);
+    setPriceRange({
+      min: min_price || "",
+      max: max_price || "",
+    });
 
     const filtersFromURL: ProductsQueryParams = {
       category: categories.length > 0 ? categories : undefined,
@@ -96,7 +110,7 @@ export default function ProductFilter() {
     // Apply filters (will fetch products)
     applyFilters(filtersFromURL);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   // Sync price range with store filters
   useEffect(() => {
@@ -220,7 +234,7 @@ export default function ProductFilter() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={dropdownRef}>
       {/* Filters - All wrap naturally */}
       <div className="pb-2">
         <div className="overflow-x-auto lg:overflow-visible scrollbar-hide flex justify-between flex-nowrap gap-1 lg:gap-3 ">
@@ -264,10 +278,10 @@ export default function ProductFilter() {
                             {selectedCategories.includes(
                               category.category_name
                             ) && (
-                              <span className="material-symbols-outlined text-xs text-primary">
-                                check
-                              </span>
-                            )}
+                                <span className="material-symbols-outlined text-xs text-primary">
+                                  check
+                                </span>
+                              )}
                           </div>
                           {category.category_name}
                         </button>
@@ -298,22 +312,32 @@ export default function ProductFilter() {
               {openDropdown === "brands" && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
                   <div className="py-2 max-h-64 overflow-y-auto">
-                    {brands.map((brand) => (
-                      <button
-                        key={brand.brand_id}
-                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => handleBrandSelect(brand.brand_name)}
-                      >
-                        <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center flex-shrink-0">
-                          {selectedBrands.includes(brand.brand_name) && (
-                            <span className="material-symbols-outlined text-xs text-primary">
-                              check
-                            </span>
-                          )}
-                        </div>
-                        {brand.brand_name}
-                      </button>
-                    ))}
+                    {categoriesLoading ? (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Loading brands...
+                      </div>
+                    ) : brands.length === 0 ? (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        No brands available
+                      </div>
+                    ) : (
+                      brands.map((brand) => (
+                        <button
+                          key={brand.brand_id}
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={() => handleBrandSelect(brand.brand_name)}
+                        >
+                          <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center flex-shrink-0">
+                            {selectedBrands.includes(brand.brand_name) && (
+                              <span className="material-symbols-outlined text-xs text-primary">
+                                check
+                              </span>
+                            )}
+                          </div>
+                          {brand.brand_name}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -339,22 +363,32 @@ export default function ProductFilter() {
               {openDropdown === "crops" && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
                   <div className="py-2 max-h-64 overflow-y-auto">
-                    {crops.map((crop) => (
-                      <button
-                        key={crop.crop_id}
-                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => handleCropSelect(crop.crop_name)}
-                      >
-                        <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center flex-shrink-0">
-                          {selectedCrops.includes(crop.crop_name) && (
-                            <span className="material-symbols-outlined text-xs text-primary">
-                              check
-                            </span>
-                          )}
-                        </div>
-                        {crop.crop_name}
-                      </button>
-                    ))}
+                    {categoriesLoading ? (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Loading crops...
+                      </div>
+                    ) : crops.length === 0 ? (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        No crops available
+                      </div>
+                    ) : (
+                      crops.map((crop) => (
+                        <button
+                          key={crop.crop_id}
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={() => handleCropSelect(crop.crop_name)}
+                        >
+                          <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center flex-shrink-0">
+                            {selectedCrops.includes(crop.crop_name) && (
+                              <span className="material-symbols-outlined text-xs text-primary">
+                                check
+                              </span>
+                            )}
+                          </div>
+                          {crop.crop_name}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

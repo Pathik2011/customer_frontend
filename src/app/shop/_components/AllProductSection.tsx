@@ -4,6 +4,7 @@ import ProductCart from "@/components/layout/common/ProductCart";
 import { useProductStore } from "@/store";
 import { useEffect, useState, Suspense } from "react";
 import ProductFilter from "./ProductFilter";
+import { useRouter } from "next/navigation";
 
 export default function AllProductSection() {
   const {
@@ -17,6 +18,7 @@ export default function AllProductSection() {
     clearFilters,
     currentFilters,
   } = useProductStore();
+  const router = useRouter();
 
   const [loadingMore, setLoadingMore] = useState(false);
 
@@ -134,13 +136,18 @@ export default function AllProductSection() {
                 {hasActiveFilters() ? (
                   <div className="flex justify-center gap-3">
                     <button
-                      onClick={() => clearFilters()}
+                      onClick={() => {
+                        clearFilters();
+                        router.push("/shop", { scroll: false });
+                      }}
                       className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium"
                     >
                       Clear Filters
                     </button>
                     <button
-                      onClick={() => fetchProducts()}
+                      onClick={() => {
+                        router.push("/shop", { scroll: false });
+                      }}
                       className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 font-medium"
                     >
                       View All Products
@@ -148,7 +155,9 @@ export default function AllProductSection() {
                   </div>
                 ) : (
                   <button
-                    onClick={() => fetchProducts()}
+                    onClick={() => {
+                      router.push("/shop", { scroll: false });
+                    }}
                     className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium"
                   >
                     Refresh Products
@@ -160,7 +169,7 @@ export default function AllProductSection() {
           {/* Products Grid - Mobile */}
           {!isLoading && !error && products.length > 0 && (
             <div className="relative">
-              <div className="w-max mx-auto  grid grid-cols-2 gap-3 sm:gap-4 mb-8 relative z-0">
+              <div className="w-max mx-auto grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8 relative z-0">
                 {products.map((product, index) => (
                   <ProductCart
                     product={product}
@@ -249,20 +258,22 @@ export default function AllProductSection() {
                     ? "No Products Found"
                     : "No Products Available"}
                 </h3>
-                <p className="text-gray-600 mb-8 max-w-lg mx-auto">
-                  {hasActiveFilters()
-                    ? `No products match your current search criteria: ${getFilterSummary()}. Try adjusting your filters or browse all products.`
-                    : "There are currently no products available in our catalog. Please check back later or contact support."}
-                </p>
+
                 <div className="flex justify-center gap-4">
                   <button
-                    onClick={() => fetchProducts()}
+                    onClick={() => {
+                      clearFilters();
+                      router.push("/shop", { scroll: false });
+                    }}
                     className="bg-primary text-white px-8 py-3 rounded-lg hover:bg-green-700 font-medium"
                   >
                     View All Products
                   </button>
                   <button
-                    onClick={() => clearFilters()}
+                    onClick={() => {
+                      clearFilters();
+                      router.push("/shop", { scroll: false });
+                    }}
                     className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-50 font-medium"
                   >
                     Reset Filters

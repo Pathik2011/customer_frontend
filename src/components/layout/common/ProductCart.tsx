@@ -118,7 +118,7 @@ const ProductCart = ({ product }: Props) => {
   return (
     <div
       key={product.product_id}
-      className="bg-white rounded-xl p-4 shadow-sm border border-dimGray_01 hover:shadow-md transition-shadow flex flex-col  min-w-[177px] w-[177px] lg:min-w-[240px] lg:w-[240px] min-h-[348px]"
+      className="bg-white rounded-xl p-4 shadow-sm border border-dimGray_01 hover:shadow-md transition-shadow flex flex-col  min-w-[177px] w-[177px] md:min-w-[210px] md:w-[210px] lg:min-w-[230px] lg:w-[230px] xl:min-w-[240px] xl:w-[240px] min-h-[348px]"
     >
       {/* Product Image Container */}
       <div className="mb-4 flex-shrink-0 relative">

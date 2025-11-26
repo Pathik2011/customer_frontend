@@ -25,10 +25,11 @@ export default function ProductVariants({
       </h3>
 
       {/* Variant Options */}
-      <div className="flex gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-visible px-4 lg:px-0 pb-2 lg:pb-0 scrollbar-hide">
+      <div className="flex gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-auto px-4 lg:px-0 pb-2 lg:pb-0 scrollbar-hide">
         {variants.map((variant, index: number) => {
-          const isSelected = variant.variant_id === selectedVariant.variant_id;
-          const isActive = variant.is_active && variant.stock_quantity > 0;
+          const isSelected =
+            variant.product_variant_id === selectedVariant.product_variant_id;
+          const isActive = variant.is_active;
           const discountedPrice = variant.discount
             ? variant.price - (variant.price * variant.discount) / 100
             : variant.price;
@@ -71,18 +72,18 @@ export default function ProductVariants({
 
               {/* Quantity Controls for Selected Variant */}
               {isSelected && isActive && (
-                <div className="flex items-center justify-center gap-2 lg:gap-3 px-3 lg:px-4 pb-3 lg:pb-4">
+                <div className="w-max mx-auto bg-white flex items-center justify-center rounded-xl border border-dimGray_01 gap-1 lg:gap-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onQuantityChange(-1);
                     }}
                     disabled={quantity <= 1}
-                    className="w-5 h-5 lg:w-6 lg:h-6 flex items-center justify-center text-red-500 text-lg lg:text-xl font-light disabled:opacity-30 disabled:cursor-not-allowed hover:text-red-600"
+                    className="w-5 h-full lg:w-6 py-1 lg:py-2 px-3 md:px-4 flex items-center justify-center text-red-500 border-r border-dimGray_01 text-lg lg:text-xl font-light disabled:text-red-200 disabled:cursor-not-allowed hover:text-red-600"
                   >
                     −
                   </button>
-                  <span className="min-w-[20px] lg:min-w-[24px] text-center font-semibold text-gray-900 text-sm lg:text-base">
+                  <span className="py-1 lg:py-2 min-w-[20px] lg:min-w-[24px] text-center font-semibold  text-gray-900 text-sm lg:text-base">
                     {quantity}
                   </span>
                   <button
@@ -91,7 +92,7 @@ export default function ProductVariants({
                       onQuantityChange(1);
                     }}
                     disabled={quantity >= variant.stock_quantity}
-                    className="w-5 h-5 lg:w-6 lg:h-6 flex items-center justify-center text-green-600 text-lg lg:text-xl font-light disabled:opacity-30 disabled:cursor-not-allowed hover:text-green-700"
+                    className="w-5 h-full lg:w-6 py-1 lg:py-2 px-3 md:px-4 flex items-center justify-center text-green-600 border-l border-dimGray_01  text-lg lg:text-xl font-light disabled:text-green-200 disabled:cursor-not-allowed hover:text-green-700"
                   >
                     +
                   </button>

@@ -41,9 +41,27 @@ export default function Header() {
     const button = buttonRefs.current[categoryId];
     if (button) {
       const rect = button.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const dropdownWidth = categoryId === -1 ? 256 : 200;
+
+      // Adjust positioning for smaller screens
+      let leftPosition = rect.left;
+      if (categoryId === -1) {
+        // Right-align for "More" button
+        leftPosition = rect.right - dropdownWidth;
+      }
+
+      // Ensure dropdown doesn't go off-screen on tablets
+      if (leftPosition + dropdownWidth > viewportWidth) {
+        leftPosition = viewportWidth - dropdownWidth - 16;
+      }
+      if (leftPosition < 16) {
+        leftPosition = 16;
+      }
+
       setDropdownPosition({
         top: rect.bottom + 8,
-        left: categoryId === -1 ? rect.right - 256 : rect.left, // Right-align for "More" button
+        left: leftPosition,
       });
     }
   };
@@ -76,9 +94,8 @@ export default function Header() {
 
       {/* Main Header */}
       <header
-        className={`bg-white shadow-sm border-b border-b-dimGray_01 transition-all duration-300 ${
-          isSticky ? "fixed top-0 left-0 right-0 shadow-lg" : ""
-        }`}
+        className={`bg-white shadow-sm border-b border-b-dimGray_01 transition-all duration-300 ${isSticky ? "fixed top-0 left-0 right-0 shadow-lg" : ""
+          }`}
         style={{ zIndex: isSticky ? 1000 : 100 }}
       >
         <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
@@ -201,27 +218,26 @@ export default function Header() {
                   </div>
                 ) : (
                   categories.map((category) => (
-                    <div key={category.category_id} className="relative">
+                    <div key={category.category_id} className="">
                       <button
                         className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50 rounded-lg text-sm text-primary transition-colors"
-                        onMouseEnter={() =>
+                        onClick={() => {
                           setMobileExpandedCategory(
                             mobileExpandedCategory === category.category_id
                               ? null
                               : category.category_id
-                          )
-                        }
+                          );
+                        }}
                       >
                         <span className="font-medium">
                           {category.category_name}
                         </span>
                         {category.sub_categories.length > 0 && (
                           <span
-                            className={`material-symbols-outlined text-sm transition-transform duration-200 ${
-                              mobileExpandedCategory === category.category_id
-                                ? "rotate-180"
-                                : ""
-                            }`}
+                            className={`material-symbols-outlined text-sm transition-transform duration-200 ${mobileExpandedCategory === category.category_id
+                              ? "rotate-180"
+                              : ""
+                              }`}
                           >
                             keyboard_arrow_down
                           </span>
@@ -272,13 +288,13 @@ export default function Header() {
           style={{ overflow: "visible", zIndex: 100 }}
         >
           <div
-            className=" mx-auto px-2 sm:px-4"
+            className="mx-auto"
             style={{ overflow: "visible" }}
           >
-            {/* Desktop Navigation */}
+            {/* Desktop & Tablet Navigation */}
             <div
               onMouseLeave={() => setOpenDropdown(null)}
-              className="hidden md:block relative"
+              className="hidden sm:block relative"
               style={{ overflow: "visible", zIndex: 100 }}
             >
               {isLoading ? (
@@ -286,19 +302,27 @@ export default function Header() {
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2 md:gap-4 lg:gap-6 overflow-x-auto scrollbar-hide pb-1">
+                <div className="flex items-center justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-6 overflow-x-auto scrollbar-hide nav-scroll-container pb-1 px-4 sm:px-6 md:px-8 lg:px-0 lg:justify-center">
                   {categories.slice(0, 6).map((category) => (
-                    <div key={category.category_id} className="relative ">
+                    <div key={category.category_id} className="relative flex-shrink-0">
                       <button
                         ref={(el) => {
                           buttonRefs.current[category.category_id] = el;
                         }}
-                        className={`flex items-center gap-1 font-medium text-sm transition-all duration-200 whitespace-nowrap px-3 py-2 rounded-md min-w-fit ${
-                          openDropdown === category.category_id
-                            ? "text-green-600 bg-green-50"
-                            : "text-primary hover:text-green-600 hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-1 font-medium text-xs sm:text-sm md:text-sm transition-all duration-200 whitespace-nowrap px-2 sm:px-3 py-2 rounded-md min-w-fit ${openDropdown === category.category_id
+                          ? "text-green-600 bg-green-50"
+                          : "text-primary hover:text-green-600 hover:bg-gray-50"
+                          }`}
                         onMouseEnter={(e) => {
+                          e.stopPropagation();
+                          calculateDropdownPosition(category.category_id);
+                          setOpenDropdown(
+                            openDropdown === category.category_id
+                              ? null
+                              : category.category_id
+                          );
+                        }}
+                        onClick={(e) => {
                           e.stopPropagation();
                           calculateDropdownPosition(category.category_id);
                           setOpenDropdown(
@@ -311,11 +335,10 @@ export default function Header() {
                         {category.category_name}
                         {category.sub_categories.length > 0 && (
                           <span
-                            className={`material-symbols-outlined text-base transition-transform duration-200 ${
-                              openDropdown === category.category_id
-                                ? "rotate-180"
-                                : ""
-                            }`}
+                            className={`material-symbols-outlined text-base transition-transform duration-200 ${openDropdown === category.category_id
+                              ? "rotate-180"
+                              : ""
+                              }`}
                           >
                             keyboard_arrow_down
                           </span>
@@ -338,7 +361,7 @@ export default function Header() {
                               {category.sub_categories.map((subCategory) => (
                                 <button
                                   key={subCategory.category_id}
-                                  className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                  className="block w-full text-left px-4 py-3 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[44px] flex items-center"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setOpenDropdown(null);
@@ -361,11 +384,10 @@ export default function Header() {
                         ref={(el) => {
                           buttonRefs.current[-1] = el;
                         }}
-                        className={`flex items-center gap-1 font-medium text-sm transition-all duration-200 whitespace-nowrap px-3 py-2 rounded-md min-w-fit ${
-                          openDropdown === -1
-                            ? "text-green-600 bg-green-50"
-                            : "text-primary hover:text-green-600 hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-1 font-medium text-xs sm:text-sm md:text-sm transition-all duration-200 whitespace-nowrap px-2 sm:px-3 py-2 rounded-md min-w-fit ${openDropdown === -1
+                          ? "text-green-600 bg-green-50"
+                          : "text-primary hover:text-green-600 hover:bg-gray-50"
+                          }`}
                         onMouseEnter={(e) => {
                           e.stopPropagation();
                           calculateDropdownPosition(-1);
@@ -374,9 +396,8 @@ export default function Header() {
                       >
                         More
                         <span
-                          className={`material-symbols-outlined text-base transition-transform duration-200 ${
-                            openDropdown === -1 ? "rotate-180" : ""
-                          }`}
+                          className={`material-symbols-outlined text-base transition-transform duration-200 ${openDropdown === -1 ? "rotate-180" : ""
+                            }`}
                         >
                           keyboard_arrow_down
                         </span>
@@ -407,7 +428,7 @@ export default function Header() {
                                       (subCategory) => (
                                         <button
                                           key={subCategory.category_id}
-                                          className="block w-full text-left px-6 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                          className="block w-full text-left px-6 py-2 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[40px] flex items-center"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setOpenDropdown(null);
@@ -421,7 +442,7 @@ export default function Header() {
                                 ) : (
                                   // Category without subcategories - show as direct link
                                   <button
-                                    className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                    className="block w-full text-left px-4 py-3 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[44px] flex items-center"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setOpenDropdown(null);
