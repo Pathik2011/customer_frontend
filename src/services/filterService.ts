@@ -2,7 +2,7 @@
 import { FilterApiResponse } from '@/types';
 
 // Use env variable if available, otherwise default to the dev URL
-const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL 
+const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL || 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
 // Construct the full URL using the base host
 const API_URL = `${API_HOST}/products/list-for-search-dropdown`;
 
