@@ -4,7 +4,7 @@ import { Product, ProductDetail, ProductFilters } from '@/types';
 
 // Base Host (Product Service)
 // const API_HOST = 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
-const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL
+const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL || 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
 // Existing endpoint
 const PRODUCTS_URL = `${API_HOST}/products`;
 
