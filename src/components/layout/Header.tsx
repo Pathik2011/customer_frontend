@@ -1,469 +1,415 @@
-"use client";
 
-import PhoneIcon from "@/icons/PhoneIcon";
-import SearchIcon from "@/icons/SearchIcon";
-import ShoppingBagIcon from "@/icons/ShoppingBagIcon";
-import UserProfileIcon from "@/icons/UserProfileIcon";
-import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { Button } from "./common";
-import { useCategoryStore } from "@/store/useCategoryStore";
-import "@/styles/header.css";
-import Link from "next/link";
+// 'use client';
 
-export default function Header() {
+// import React, { useState, useEffect } from 'react';
+// import { Search, ShoppingBag, User, ChevronDown, Menu, X, ChevronRight } from 'lucide-react';
+// import Link from 'next/link';
+// import { fetchFilterOptions } from '@/services/filterService'; 
+// import { FilterApiResponse } from '@/types';
+// import { useCart } from '@/context/CartContext'; 
+// import LoginPopup from '@/components/auth/LoginPopup';
+// import { getCurrentUser } from 'aws-amplify/auth';
+// import { Hub } from 'aws-amplify/utils'; // [!code ++] 1. Import Hub
+
+// const Header = () => {
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  
+//   const [navData, setNavData] = useState<FilterApiResponse | null>(null);
+//   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  
+//   const { cartCount } = useCart(); 
+//   const [animate, setAnimate] = useState(false);
+
+//   // [!code ++] 2. Updated Auth Logic with Event Listener
+//   useEffect(() => {
+//     const checkAuthUser = async () => {
+//       try {
+//         const user = await getCurrentUser();
+//         console.log("✅ User Details:", user);
+//         console.log("🆔 Cognito ID:", user.userId);
+//       } catch (error) {
+//         // It's okay if this fails initially
+//         console.log("⚪ No user session found yet.");
+//       }
+//     };
+
+//     // Run immediately (in case user is already logged in from before)
+//     checkAuthUser();
+
+//     // Listen for the 'signedIn' event (fires immediately AFTER redirect finishes)
+//     const hubListener = Hub.listen('auth', ({ payload }) => {
+//       if (payload.event === 'signedIn') {
+//         console.log("🔔 Login detected! Fetching ID...");
+//         checkAuthUser();
+//       }
+//     });
+
+//     return () => hubListener(); // Cleanup listener
+//   }, []);
+
+//   useEffect(() => {
+//     if (cartCount > 0) {
+//       setAnimate(true);
+//       const timer = setTimeout(() => setAnimate(false), 300); 
+//       return () => clearTimeout(timer);
+//     }
+//   }, [cartCount]);
+
+//   useEffect(() => {
+//     const loadData = async () => {
+//       try {
+//         const result = await fetchFilterOptions();
+//         setNavData(result);
+//       } catch (error) {
+//         console.error("Failed to load mobile nav data", error);
+//       }
+//     };
+//     loadData();
+//   }, []);
+
+//   const toggleAccordion = (label: string) => {
+//     setExpandedItem(expandedItem === label ? null : label);
+//   };
+
+//   useEffect(() => {
+//     if (isMobileMenuOpen) {
+//       document.body.style.overflow = 'hidden';
+//     } else {
+//       if(!isLoginOpen) document.body.style.overflow = 'unset';
+//     }
+//   }, [isMobileMenuOpen, isLoginOpen]);
+
+//   const getCategory = (name: string) => navData?.categories.find(c => c.category_name === name);
+  
+//   const mobileMenuItems = [
+//     { label: 'Pesticides', data: getCategory('Pesticides')?.sub_categories },
+//     { label: 'Fertilizers', data: getCategory('Fertilizers')?.sub_categories },
+//     { label: 'Seeds', data: getCategory('Seeds')?.sub_categories },
+//     { label: 'Brands', data: navData?.brands },
+//     { label: 'Crops', data: navData?.crops },
+//   ];
+
+//   const handleLoginClick = (e: React.MouseEvent) => {
+//     e.preventDefault(); 
+//     setIsLoginOpen(true);
+//   };
+
+//   return (
+//     <>
+//     <LoginPopup isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} /> 
+
+//     <div className="w-full bg-white border-b border-gray-100 font-jakarta relative z-50">
+//         <div className="max-w-[1600px] mx-auto px-4 py-3 lg:py-0 lg:h-[98px] flex flex-col lg:block relative">
+            
+//             <div className="flex justify-between items-center h-[44px] lg:h-full lg:static">
+                
+//                 <Link href="/" className="flex items-center gap-2 cursor-pointer lg:absolute lg:left-[84px] lg:top-[27px] shrink-0 z-20">
+//                     <div className="w-[163px] h-[44px] relative hidden lg:block">
+//                       <img src="/Logo.png" alt="Sapana Fertilizer" className="w-full h-full object-contain"/>
+//                     </div>
+//                     <div className="w-[120px] h-[36px] relative lg:hidden">
+//                       <img src="/Logo.png" alt="Sapana Fertilizer" className="w-full h-full object-contain"/>
+//                     </div>
+//                 </Link>
+
+//                 <div className="hidden lg:block flex-1 mx-6 lg:mx-0 lg:absolute lg:left-[50%] lg:-translate-x-1/2 lg:top-[26px] lg:w-[40%] lg:max-w-[470px] lg:h-[46px] z-10">
+//                     <div className="relative w-full h-full">
+//                       <input type="text" placeholder="Search your product..." className="w-full h-[40px] lg:h-full bg-gray-100 rounded-[40px] border border-gray-200 px-6 pl-12 text-sm outline-none focus:ring-1 focus:ring-emerald-600 transition-shadow" />
+//                       <Search className="w-4 h-4 absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
+//                     </div>
+//                 </div>
+
+//                 <div className="flex items-center gap-2 sm:gap-4 lg:absolute lg:right-[84px] lg:top-[31px] shrink-0 z-20">
+//                     <button className="hidden sm:flex items-center justify-between gap-2 border border-gray-300 rounded-full px-3 py-1.5 text-xs lg:text-sm font-medium text-emerald-900 hover:bg-gray-50 transition-colors lg:w-[97px] lg:h-[36px] lg:rounded-[12px]">English <ChevronDown size={14} /></button>
+                    
+//                     <button 
+//                       type="button"
+//                       onClick={handleLoginClick}
+//                       className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 transition-colors"
+//                     >
+//                       <div className="p-2 bg-gray-100 rounded-full lg:bg-transparent lg:p-0">
+//                         <User size={20} className="lg:w-[18px] lg:h-[18px]" />
+//                       </div>
+//                       <span className="hidden lg:inline text-sm font-medium">Login</span>
+//                     </button>
+                    
+//                     <Link href="/bag" className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 transition-colors relative group">
+//                         <div className={`
+//                           p-2 bg-gray-100 rounded-full lg:bg-transparent lg:p-0 relative transition-transform duration-300
+//                           ${animate ? 'scale-125' : 'scale-100'} 
+//                         `}>
+//                             <ShoppingBag size={20} className="lg:w-[18px] lg:h-[18px]" />
+                            
+//                             {cartCount > 0 && (
+//                               <span className="
+//                                 absolute -top-1 -right-1 lg:-top-2 lg:-right-2
+//                                 flex items-center justify-center
+//                                 min-w-[18px] h-[18px] px-1
+//                                 bg-[#FD820B] text-white text-[10px] font-bold
+//                                 rounded-full border-2 border-white
+//                                 shadow-sm pointer-events-none
+//                               ">
+//                                 {cartCount > 99 ? '99+' : cartCount}
+//                               </span>
+//                             )}
+//                         </div>
+//                         <span className="hidden lg:inline text-sm font-medium">Bag</span>
+//                     </Link>
+
+//                     <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 bg-gray-100 rounded-full text-emerald-900 hover:bg-gray-200 transition-colors"><Menu size={20} /></button>
+//                 </div>
+//             </div>
+
+//             <div className="mt-3 lg:hidden relative w-full">
+//                 <input type="text" placeholder="Search product..." className="w-full h-[44px] bg-gray-100 rounded-full border border-gray-200 px-4 pl-10 text-sm outline-none focus:ring-1 focus:ring-emerald-600" />
+//                 <Search className="w-4 h-4 absolute left-3.5 top-[14px] text-gray-400" />
+//             </div>
+//         </div>
+//     </div>
+
+//     <div className={`fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setIsMobileMenuOpen(false)} />
+//     <div className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+//        <div className="p-4 flex justify-between items-center border-b border-gray-100">
+//           <span className="font-bold text-lg text-emerald-900">Menu</span>
+//           <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} className="text-gray-600"/></button>
+//        </div>
+//        <div className="p-4 overflow-y-auto h-[calc(100%-60px)]">
+//           <ul className="space-y-2">
+//              {mobileMenuItems.map((item) => (
+//                <li key={item.label} className="border-b border-gray-50 last:border-0">
+//                  <button onClick={() => toggleAccordion(item.label)} className="w-full flex items-center justify-between py-3 text-base font-medium text-gray-800 hover:text-emerald-700">
+//                    {item.label} <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${expandedItem === item.label ? 'rotate-90' : ''}`} />
+//                  </button>
+//                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedItem === item.label ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+//                    <ul className="pl-4 pb-2 space-y-2 bg-gray-50/50 rounded-lg mb-2">
+//                      {item.data && item.data.length > 0 ? (
+//                        item.data.map((subItem: any) => (
+//                          <li key={subItem.category_id || subItem.brand_id || subItem.crop_id}>
+//                            <Link href="#" className="block py-2 text-sm text-gray-600 hover:text-emerald-600">
+//                              {subItem.category_name || subItem.brand_name || subItem.crop_name}
+//                            </Link>
+//                          </li>
+//                        ))
+//                      ) : <li className="py-2 text-sm text-gray-400 italic">No items found</li>}
+//                    </ul>
+//                  </div>
+//                </li>
+//              ))}
+//           </ul>
+//           <div className="mt-8 pt-8 border-t border-gray-100">
+//             <button 
+//               type="button" 
+//               onClick={() => { setIsMobileMenuOpen(false); setIsLoginOpen(true); }} 
+//               className="w-full bg-emerald-900 text-white py-3 rounded-xl font-bold mb-4 hover:bg-emerald-800 transition-colors"
+//             >
+//               Login / Sign Up
+//             </button>
+//             <p className="text-center text-sm text-gray-500">Need Help? +91 70451 12345</p>
+//           </div>
+//        </div>
+//     </div>
+//     </>
+//   );
+// };
+
+// export default Header;
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Search, ShoppingBag, User, ChevronDown, Menu, X, ChevronRight, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { fetchFilterOptions } from '@/services/filterService'; 
+import { FilterApiResponse } from '@/types';
+import { useCart } from '@/context/CartContext'; 
+import { useAuth } from '@/context/AuthContext'; 
+import LoginPopup from '@/components/auth/LoginPopup'; // [!code ++] Import Popup
+
+const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
-  const [mobileExpandedCategory, setMobileExpandedCategory] = useState<
-    number | null
-  >(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [isSticky, setIsSticky] = useState(false);
-  const buttonRefs = useRef<{ [key: number]: HTMLButtonElement | null }>({});
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // [!code ++] State for Popup
+  
+  const [navData, setNavData] = useState<FilterApiResponse | null>(null);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [animate, setAnimate] = useState(false);
 
-  const { categories, fetchCategories, isLoading } = useCategoryStore();
+  const { cartCount } = useCart(); 
+  const { isAuthenticated, logout } = useAuth(); 
+
+  // ... (Keep existing useEffects for Cart, Data Load, Scroll Lock) ...
+  useEffect(() => {
+    if (cartCount > 0) {
+      setAnimate(true);
+      const timer = setTimeout(() => setAnimate(false), 300); 
+      return () => clearTimeout(timer);
+    }
+  }, [cartCount]);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
+    const loadData = async () => {
+      try {
+        const result = await fetchFilterOptions();
+        setNavData(result);
+      } catch (error) {
+        console.error("Failed to load mobile nav data", error);
+      }
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    loadData();
   }, []);
 
-  // Calculate dropdown position
-  const calculateDropdownPosition = (categoryId: number) => {
-    const button = buttonRefs.current[categoryId];
-    if (button) {
-      const rect = button.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      const dropdownWidth = categoryId === -1 ? 256 : 200;
-
-      // Adjust positioning for smaller screens
-      let leftPosition = rect.left;
-      if (categoryId === -1) {
-        // Right-align for "More" button
-        leftPosition = rect.right - dropdownWidth;
-      }
-
-      // Ensure dropdown doesn't go off-screen on tablets
-      if (leftPosition + dropdownWidth > viewportWidth) {
-        leftPosition = viewportWidth - dropdownWidth - 16;
-      }
-      if (leftPosition < 16) {
-        leftPosition = 16;
-      }
-
-      setDropdownPosition({
-        top: rect.bottom + 8,
-        left: leftPosition,
-      });
+  // [!code changed] Scroll lock checks both Mobile Menu AND Login Popup
+  useEffect(() => {
+    if (isMobileMenuOpen || isLoginOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
+  }, [isMobileMenuOpen, isLoginOpen]);
+
+  const toggleAccordion = (label: string) => {
+    setExpandedItem(expandedItem === label ? null : label);
   };
+
+  const getCategory = (name: string) => navData?.categories.find(c => c.category_name === name);
+  
+  const mobileMenuItems = [
+    { label: 'Pesticides', data: getCategory('Pesticides')?.sub_categories },
+    { label: 'Fertilizers', data: getCategory('Fertilizers')?.sub_categories },
+    { label: 'Seeds', data: getCategory('Seeds')?.sub_categories },
+    { label: 'Brands', data: navData?.brands },
+    { label: 'Crops', data: navData?.crops },
+  ];
 
   return (
     <>
-      {/* Top Banner */}
-      <div className="bg-primary text-white text-xs sm:text-sm px-0 sm:px-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
-          <div className="py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
-            <span className="text-xs flex items-center gap-1 sm:gap-2">
-              Get <span className="text-[#FFEB6D]">30% Off</span> on your first
-              order ✨
-            </span>
-            <span className="flex items-center gap-1 sm:gap-2">
-              Order now and get it within
-              <span className="text-[#FFEB6D]"> 20 minutes</span>
-            </span>
-          </div>
-          <div className="hidden  w-full lg:w-max py-2 lg:flex flex-row items-center gap-2 sm:gap-4 bg-[#FD820B]">
-            <button className=" px-3 sm:px-4 py-1 rounded text-white font-medium text-xs sm:text-sm">
-              Call for Order
-            </button>
-            <span className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <PhoneIcon /> +91 7043 11 9999
-            </span>
-          </div>
-        </div>
-      </div>
+    {/* [!code ++] Render Popup */}
+    <LoginPopup isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} /> 
 
-      {/* Main Header */}
-      <header
-        className={`bg-white shadow-sm border-b border-b-dimGray_01 transition-all duration-300 ${isSticky ? "fixed top-0 left-0 right-0 shadow-lg" : ""
-          }`}
-        style={{ zIndex: isSticky ? 1000 : 100 }}
-      >
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href={"/"}>
-              <Image
-                src="/images/Logo.png"
-                alt="Logo"
-                height={100}
-                width={100}
-                unoptimized
-              />
-            </Link>
-            {/* Search Bar - Hidden on mobile */}
-            <div className="hidden md:flex flex-1 max-w-lg mx-4 lg:mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search you product, category or brands"
-                  className="w-full px-4 py-2 lg:py-3 pl-10 lg:pl-12 border border-gray-300 rounded-[40px] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 text-sm"
-                />
-                <button className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <SearchIcon />
-                </button>
-              </div>
-            </div>
-
-            {/* Right Side Actions */}
-            <div className="flex items-center gap-1 sm:gap-3">
-              {/* Desktop Actions */}
-              <div className="hidden sm:flex items-center gap-2 lg:gap-3 text-primary text-sm font-semibold">
-                <Button
-                  disabled
-                  className="h-full w-full flex items-center gap-1 px-3 py-2 border border-primary rounded-xl hover:bg-gray-50 text-xs text-primary font-medium"
-                >
-                  English{" "}
-                  <span className="material-symbols-outlined text-sm">
-                    keyboard_arrow_down
-                  </span>
-                </Button>
-                <Button
-                  disabled
-                  className="h-max flex items-center gap-1 lg:gap-2 px-2 lg:px-4 py-1 lg:py-2 hover:bg-gray-50 rounded-full text-xs lg:text-sm"
-                >
-                  <UserProfileIcon /> Login
-                </Button>
-                <Button
-                  disabled
-                  className="flex items-center gap-1 lg:gap-2 px-2 lg:px-4 py-1 lg:py-2 hover:bg-gray-50 rounded-full text-xs lg:text-sm"
-                >
-                  <ShoppingBagIcon /> Bag
-                </Button>
-              </div>
-
-              {/* Mobile Actions */}
-              <div className="sm:hidden flex items-center gap-[10px]">
-                <Button
-                  className="h-full w-full flex items-center gap-1 px-3 py-2 border border-primary rounded-xl hover:bg-gray-50 text-xs text-primary font-medium"
-                  disabled
-                >
-                  English
-                  <span className="material-symbols-outlined text-sm">
-                    keyboard_arrow_down
-                  </span>
-                </Button>
-
-                <Button disabled>
-                  <UserProfileIcon className="min-w-5 min-h-5" />
-                </Button>
-
-                <Button disabled>
-                  <ShoppingBagIcon className="min-w-5 min-h-5" />
-                </Button>
-
-                <Button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="enabled:hover:bg-gray-200"
-                >
-                  <svg
-                    className="min-w-6 min-h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Search Bar */}
-          <div className="md:hidden mt-3">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 text-sm"
-              />
-              <button className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400">
-                <SearchIcon className="w-full h-9" />
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="sm:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
-              {/* Navigation Items */}
-              <div className="flex flex-col space-y-2 mb-4">
-                {isLoading ? (
-                  <div className="flex justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                  </div>
-                ) : (
-                  categories.map((category) => (
-                    <div key={category.category_id} className="">
-                      <button
-                        className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50 rounded-lg text-sm text-primary transition-colors"
-                        onClick={() => {
-                          setMobileExpandedCategory(
-                            mobileExpandedCategory === category.category_id
-                              ? null
-                              : category.category_id
-                          );
-                        }}
-                      >
-                        <span className="font-medium">
-                          {category.category_name}
-                        </span>
-                        {category.sub_categories.length > 0 && (
-                          <span
-                            className={`material-symbols-outlined text-sm transition-transform duration-200 ${mobileExpandedCategory === category.category_id
-                              ? "rotate-180"
-                              : ""
-                              }`}
-                          >
-                            keyboard_arrow_down
-                          </span>
-                        )}
-                      </button>
-
-                      {/* Mobile Subcategories */}
-                      {mobileExpandedCategory === category.category_id &&
-                        category.sub_categories.length > 0 && (
-                          <div className="ml-4 mt-2 space-y-1 border-l-2 border-gray-100 pl-4">
-                            {category.sub_categories.map((subCategory) => (
-                              <button
-                                key={subCategory.category_id}
-                                className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors"
-                              >
-                                {subCategory.category_name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+    <div className="w-full bg-white border-b border-gray-100 font-jakarta relative z-50">
+        <div className="max-w-[1600px] mx-auto px-4 py-3 lg:py-0 lg:h-[98px] flex flex-col lg:block relative">
+            
+            <div className="flex justify-between items-center h-[44px] lg:h-full lg:static">
+                
+                <Link href="/" className="flex items-center gap-2 cursor-pointer lg:absolute lg:left-[84px] lg:top-[27px] shrink-0 z-20">
+                    <div className="w-[163px] h-[44px] relative hidden lg:block">
+                      <img src="/Logo.png" alt="Sapana Fertilizer" className="w-full h-full object-contain"/>
                     </div>
-                  ))
-                )}
-              </div>
+                    <div className="w-[120px] h-[36px] relative lg:hidden">
+                      <img src="/Logo.png" alt="Sapana Fertilizer" className="w-full h-full object-contain"/>
+                    </div>
+                </Link>
 
-              {/* User Actions */}
-              <div className="flex flex-col space-y-3 border-t border-gray-200 pt-4">
-                <button className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-50 text-sm">
-                  English{" "}
-                  <span className="material-symbols-outlined text-sm">
-                    keyboard_arrow_down
-                  </span>
-                </button>
-                <button className="flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-full text-sm">
-                  <UserProfileIcon /> Login
-                </button>
-                <button className="flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-full text-sm">
-                  <ShoppingBagIcon /> Bag
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Navigation Menu - Desktop Only */}
-        <nav
-          className="header-nav bg-white border-t border-gray-200 relative"
-          style={{ overflow: "visible", zIndex: 100 }}
-        >
-          <div
-            className="mx-auto"
-            style={{ overflow: "visible" }}
-          >
-            {/* Desktop & Tablet Navigation */}
-            <div
-              onMouseLeave={() => setOpenDropdown(null)}
-              className="hidden sm:block relative"
-              style={{ overflow: "visible", zIndex: 100 }}
-            >
-              {isLoading ? (
-                <div className="flex justify-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <div className="hidden lg:block flex-1 mx-6 lg:mx-0 lg:absolute lg:left-[50%] lg:-translate-x-1/2 lg:top-[26px] lg:w-[40%] lg:max-w-[470px] lg:h-[46px] z-10">
+                    <div className="relative w-full h-full">
+                      <input type="text" placeholder="Search your product..." className="w-full h-[40px] lg:h-full bg-gray-100 rounded-[40px] border border-gray-200 px-6 pl-12 text-sm outline-none focus:ring-1 focus:ring-emerald-600 transition-shadow" />
+                      <Search className="w-4 h-4 absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    </div>
                 </div>
-              ) : (
-                <div className="flex items-center justify-start gap-2 sm:gap-3 md:gap-4 lg:gap-6 overflow-x-auto scrollbar-hide nav-scroll-container pb-1 px-4 sm:px-6 md:px-8 lg:px-0 lg:justify-center">
-                  {categories.slice(0, 6).map((category) => (
-                    <div key={category.category_id} className="relative flex-shrink-0">
-                      <button
-                        ref={(el) => {
-                          buttonRefs.current[category.category_id] = el;
-                        }}
-                        className={`flex items-center gap-1 font-medium text-xs sm:text-sm md:text-sm transition-all duration-200 whitespace-nowrap px-2 sm:px-3 py-2 rounded-md min-w-fit ${openDropdown === category.category_id
-                          ? "text-green-600 bg-green-50"
-                          : "text-primary hover:text-green-600 hover:bg-gray-50"
-                          }`}
-                        onMouseEnter={(e) => {
-                          e.stopPropagation();
-                          calculateDropdownPosition(category.category_id);
-                          setOpenDropdown(
-                            openDropdown === category.category_id
-                              ? null
-                              : category.category_id
-                          );
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          calculateDropdownPosition(category.category_id);
-                          setOpenDropdown(
-                            openDropdown === category.category_id
-                              ? null
-                              : category.category_id
-                          );
-                        }}
+
+                <div className="flex items-center gap-2 sm:gap-4 lg:absolute lg:right-[84px] lg:top-[31px] shrink-0 z-20">
+                    <button className="hidden sm:flex items-center justify-between gap-2 border border-gray-300 rounded-full px-3 py-1.5 text-xs lg:text-sm font-medium text-emerald-900 hover:bg-gray-50 transition-colors lg:w-[97px] lg:h-[36px] lg:rounded-[12px]">English <ChevronDown size={14} /></button>
+                    
+                    {isAuthenticated ? (
+                      <button 
+                        onClick={logout}
+                        className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors"
                       >
-                        {category.category_name}
-                        {category.sub_categories.length > 0 && (
-                          <span
-                            className={`material-symbols-outlined text-base transition-transform duration-200 ${openDropdown === category.category_id
-                              ? "rotate-180"
-                              : ""
-                              }`}
-                          >
-                            keyboard_arrow_down
-                          </span>
-                        )}
-                      </button>
-
-                      {/* Desktop Dropdown */}
-                      {openDropdown === category.category_id &&
-                        category.sub_categories.length > 0 && (
-                          <div
-                            className="dropdown-menu"
-                            style={{
-                              top: dropdownPosition.top,
-                              left: dropdownPosition.left,
-                              zIndex: 999999,
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <div className="py-2 max-h-80 overflow-y-auto">
-                              {category.sub_categories.map((subCategory) => (
-                                <button
-                                  key={subCategory.category_id}
-                                  className="block w-full text-left px-4 py-3 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[44px] flex items-center"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setOpenDropdown(null);
-                                    // Handle subcategory selection here
-                                  }}
-                                >
-                                  {subCategory.category_name}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                  ))}
-
-                  {/* Show more categories if there are more than 6 */}
-                  {categories.length > 6 && (
-                    <div className="dropdown-container flex-shrink-0">
-                      <button
-                        ref={(el) => {
-                          buttonRefs.current[-1] = el;
-                        }}
-                        className={`flex items-center gap-1 font-medium text-xs sm:text-sm md:text-sm transition-all duration-200 whitespace-nowrap px-2 sm:px-3 py-2 rounded-md min-w-fit ${openDropdown === -1
-                          ? "text-green-600 bg-green-50"
-                          : "text-primary hover:text-green-600 hover:bg-gray-50"
-                          }`}
-                        onMouseEnter={(e) => {
-                          e.stopPropagation();
-                          calculateDropdownPosition(-1);
-                          setOpenDropdown(openDropdown === -1 ? null : -1);
-                        }}
-                      >
-                        More
-                        <span
-                          className={`material-symbols-outlined text-base transition-transform duration-200 ${openDropdown === -1 ? "rotate-180" : ""
-                            }`}
-                        >
-                          keyboard_arrow_down
-                        </span>
-                      </button>
-
-                      {/* More Categories Dropdown */}
-                      {openDropdown === -1 && (
-                        <div
-                          className="dropdown-menu"
-                          style={{
-                            top: dropdownPosition.top,
-                            left: dropdownPosition.left,
-                            zIndex: 999999,
-                            width: "256px",
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="py-2 max-h-80 overflow-y-auto">
-                            {categories.slice(6).map((category) => (
-                              <div key={category.category_id}>
-                                {category.sub_categories.length > 0 ? (
-                                  // Category with subcategories - show as expandable
-                                  <div className="border-b border-gray-100 last:border-b-0">
-                                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                                      {category.category_name}
-                                    </div>
-                                    {category.sub_categories.map(
-                                      (subCategory) => (
-                                        <button
-                                          key={subCategory.category_id}
-                                          className="block w-full text-left px-6 py-2 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[40px] flex items-center"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setOpenDropdown(null);
-                                          }}
-                                        >
-                                          {subCategory.category_name}
-                                        </button>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  // Category without subcategories - show as direct link
-                                  <button
-                                    className="block w-full text-left px-4 py-3 text-sm sm:text-base md:text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors min-h-[44px] flex items-center"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setOpenDropdown(null);
-                                    }}
-                                  >
-                                    {category.category_name}
-                                  </button>
-                                )}
-                              </div>
-                            ))}
-                          </div>
+                        <div className="p-2 bg-red-50 rounded-full lg:bg-transparent lg:p-0">
+                          <LogOut size={20} className="lg:w-[18px] lg:h-[18px]" />
                         </div>
-                      )}
-                    </div>
-                  )}
+                        <span className="hidden lg:inline text-sm font-medium">Logout</span>
+                      </button>
+                    ) : (
+                      <button 
+                        type="button"
+                        onClick={() => setIsLoginOpen(true)} // [!code highlight] Open Popup
+                        className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 transition-colors"
+                      >
+                        <div className="p-2 bg-gray-100 rounded-full lg:bg-transparent lg:p-0">
+                          <User size={20} className="lg:w-[18px] lg:h-[18px]" />
+                        </div>
+                        <span className="hidden lg:inline text-sm font-medium">Login</span>
+                      </button>
+                    )}
+                    
+                    <Link href="/bag" className="flex items-center gap-1 text-emerald-900 hover:text-emerald-700 transition-colors relative group">
+                        <div className={`p-2 bg-gray-100 rounded-full lg:bg-transparent lg:p-0 relative transition-transform duration-300 ${animate ? 'scale-125' : 'scale-100'}`}>
+                            <ShoppingBag size={20} className="lg:w-[18px] lg:h-[18px]" />
+                            {cartCount > 0 && (
+                              <span className="absolute -top-1 -right-1 lg:-top-2 lg:-right-2 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-[#FD820B] text-white text-[10px] font-bold rounded-full border-2 border-white shadow-sm pointer-events-none">
+                                {cartCount > 99 ? '99+' : cartCount}
+                              </span>
+                            )}
+                        </div>
+                        <span className="hidden lg:inline text-sm font-medium">Bag</span>
+                    </Link>
+
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 bg-gray-100 rounded-full text-emerald-900 hover:bg-gray-200 transition-colors"><Menu size={20} /></button>
                 </div>
-              )}
             </div>
+
+            <div className="mt-3 lg:hidden relative w-full">
+                <input type="text" placeholder="Search product..." className="w-full h-[44px] bg-gray-100 rounded-full border border-gray-200 px-4 pl-10 text-sm outline-none focus:ring-1 focus:ring-emerald-600" />
+                <Search className="w-4 h-4 absolute left-3.5 top-[14px] text-gray-400" />
+            </div>
+        </div>
+    </div>
+
+    {/* Mobile Drawer (Keep as is, just ensure login button opens popup) */}
+    <div className={`fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setIsMobileMenuOpen(false)} />
+    <div className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+       <div className="p-4 flex justify-between items-center border-b border-gray-100">
+          <span className="font-bold text-lg text-emerald-900">Menu</span>
+          <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} className="text-gray-600"/></button>
+       </div>
+       <div className="p-4 overflow-y-auto h-[calc(100%-60px)]">
+          <ul className="space-y-2">
+             {mobileMenuItems.map((item) => (
+               <li key={item.label} className="border-b border-gray-50 last:border-0">
+                 <button onClick={() => toggleAccordion(item.label)} className="w-full flex items-center justify-between py-3 text-base font-medium text-gray-800 hover:text-emerald-700">
+                   {item.label} <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${expandedItem === item.label ? 'rotate-90' : ''}`} />
+                 </button>
+                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedItem === item.label ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                   <ul className="pl-4 pb-2 space-y-2 bg-gray-50/50 rounded-lg mb-2">
+                     {item.data && item.data.length > 0 ? (
+                       item.data.map((subItem: any) => (
+                         <li key={subItem.category_id || subItem.brand_id || subItem.crop_id}>
+                           <Link href="#" className="block py-2 text-sm text-gray-600 hover:text-emerald-600">
+                             {subItem.category_name || subItem.brand_name || subItem.crop_name}
+                           </Link>
+                         </li>
+                       ))
+                     ) : <li className="py-2 text-sm text-gray-400 italic">No items found</li>}
+                   </ul>
+                 </div>
+               </li>
+             ))}
+          </ul>
+
+          <div className="mt-8 pt-8 border-t border-gray-100">
+            {isAuthenticated ? (
+               <button 
+                 onClick={() => { setIsMobileMenuOpen(false); logout(); }} 
+                 className="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl font-bold mb-4 hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+               >
+                 <LogOut size={18} /> Logout
+               </button>
+            ) : (
+               <button 
+                 type="button" 
+                 // [!code highlight] Open Popup on Mobile
+                 onClick={() => { setIsMobileMenuOpen(false); setIsLoginOpen(true); }} 
+                 className="w-full bg-emerald-900 text-white py-3 rounded-xl font-bold mb-4 hover:bg-emerald-800 transition-colors"
+               >
+                 Login / Sign Up
+               </button>
+            )}
+            <p className="text-center text-sm text-gray-500">Need Help? +91 9898929874</p>
           </div>
-        </nav>
-      </header>
+       </div>
+    </div>
     </>
   );
-}
+};
+
+export default Header;

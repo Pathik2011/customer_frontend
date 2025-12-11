@@ -1,0 +1,164 @@
+'use client';
+
+import React, { useState } from 'react';
+import { CreditCard, Wallet, Truck, CheckCircle2 } from 'lucide-react';
+import { CartSummary } from '@/context/CartContext';
+import { PaymentMethod } from '@/services/checkoutService'; // Import type
+
+interface PaymentSectionProps {
+  cartSummary: CartSummary | null;
+  paymentMethods: PaymentMethod[]; // [!code ++]
+}
+
+const PaymentSection = ({ cartSummary, paymentMethods }: PaymentSectionProps) => {
+  // Default to first method or specific fallback
+  const [selectedMethod, setSelectedMethod] = useState<string>(paymentMethods?.[0]?.method || 'CASH_ON_DELIVERY');
+  
+  const inputClass = "w-full h-[46px] border border-[#E0E2E7] rounded-[12px] px-[16px] py-[13px] text-sm text-[#1D1F2C] outline-none focus:border-[#003C22] placeholder:text-gray-400 transition-colors bg-white";
+  const labelClass = "block text-sm font-semibold text-[#1D1F2C] mb-2";
+  const separatorClass = "w-full h-[1px] bg-[#E0E2E7] my-8";
+
+  const finalAmount = cartSummary?.final_cart_price || 0;
+
+  // Helper to get icon based on method code
+  const getIcon = (method: string) => {
+    if (method === 'CASH_ON_DELIVERY') return <Truck size={18} />;
+    if (method === 'UPI_COLLECT') return <Wallet size={18} />;
+    return <CreditCard size={18} />;
+  };
+
+  // Helper to get discount badge
+  const getDiscountBadge = (methodObj: PaymentMethod) => {
+    const discount = parseInt(methodObj.discount_percent);
+    if (discount > 0) {
+      return (
+        <span 
+          className="absolute -top-3 right-2 text-white text-[10px] px-2 py-0.5 rounded-full border border-white font-normal leading-tight"
+          style={{ backgroundColor: '#FD820B' }}
+        >
+          {discount}% OFF
+        </span>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <section>
+      <h3 
+        className="font-bold text-[#1D1F2C] mb-6 mt-4"
+        style={{
+          fontSize: '20px',
+          lineHeight: '25px',
+        }}
+      >
+        Payment Details
+      </h3>
+
+      <label className={labelClass}>Select Payment Method</label>
+      
+      {/* --- Scrollable Wrapper --- */}
+      <div className="w-full overflow-x-auto no-scrollbar pt-4 pb-2 mb-6 -mx-1 px-1">
+        
+        {/* --- Dynamic Payment Method Toggle --- */}
+        <div 
+          className="flex items-center bg-white border border-[#E0E2E7] rounded-[12px] overflow-visible"
+          style={{
+            width: '612px',
+            height: '46px',
+            padding: '4px',
+            gap: '2px',
+            minWidth: '612px',
+          }}
+        >
+          {paymentMethods.map((method) => (
+             <button 
+              key={method.method}
+              onClick={() => setSelectedMethod(method.method)}
+              className={`
+                flex items-center justify-center gap-2 transition-all relative
+                ${selectedMethod === method.method 
+                  ? 'bg-[#003C22] text-white border border-[#003C22]' 
+                  : 'bg-[#F3F3F5] text-[#003C22] border border-transparent hover:bg-gray-200'}
+              `}
+              style={{
+                width: '200px',
+                height: '38px',
+                borderRadius: '12px',
+                padding: '8px 12px 10px 12px',
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {getIcon(method.method)}
+              {method.label === 'UPI Online' ? 'UPI' : method.label === 'Debit Card' ? 'Debit Card' : 'Cash On Delivery'}
+              {getDiscountBadge(method)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* --- Dynamic Payment Fields --- */}
+      <div>
+          
+          {selectedMethod === 'CASH_ON_DELIVERY' && (
+             <p className="text-sm text-gray-600 mb-4">
+               Pay directly to the delivery agent upon receiving your order.
+             </p>
+          )}
+
+          {selectedMethod === 'UPI_COLLECT' && (
+            <div className="space-y-[14px]">
+                <div className="flex items-center gap-2 text-sm text-[#003C22] bg-[#E6F4EA] p-3 rounded-md border border-[#003C22]/20">
+                  <CheckCircle2 size={16} />
+                  <span>2% Discount Applied. New item total is <strong>₹{finalAmount.toFixed(2)}</strong></span>
+                </div>
+                <div>
+                  <label className={labelClass}>UPI Id</label>
+                  <input type="text" placeholder="Enter UPI Id" className={inputClass} />
+                </div>
+            </div>
+          )}
+
+          {selectedMethod === 'DEBIT_CARD' && (
+            <div className="space-y-[14px]">
+                {/* Card inputs... (Same as before) */}
+                 <div>
+                  <label className={labelClass}>Card Number</label>
+                  <input type="text" placeholder="XXXX XXXX XXXX XXXX" className={inputClass} />
+                </div>
+                {/* ... rest of card form ... */}
+            </div>
+          )}
+
+      </div>
+
+      <div className={separatorClass}></div>
+
+      <button 
+        className="bg-[#003C22] text-white hover:bg-emerald-900 transition-colors flex items-center justify-center gap-[4px]"
+        style={{
+          width: '100%', 
+          maxWidth: '860px',
+          height: '48px',
+          borderRadius: '12px',
+          padding: '13px 34px 15px 34px',
+          fontFamily: '"Plus Jakarta Sans", sans-serif',
+          fontWeight: 600,
+          fontSize: '16px',
+          lineHeight: '100%',
+          letterSpacing: '0.01em',
+        }}
+      >
+        {selectedMethod === 'CASH_ON_DELIVERY' ? 'Place Order with Total Amount' : 'Pay Now'} (₹{finalAmount.toFixed(2)})
+      </button>
+
+    </section>
+  );
+};
+
+export default PaymentSection;

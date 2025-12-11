@@ -1,134 +1,105 @@
-import axiosInstance, { apiCall, ApiResponse } from '@/lib/axios';
-import { API_ENDPOINTS } from '@/config/api';
-import {
-  Product,
-  ProductsQueryParams,
-  ProductFilters,
-  ProductSearchListDropdownResponse,
-  SimilarProduct,
-} from '@/types/product';
 
-export const productService = {
-  // Get single product by ID
-  async getProductById(productId: string | number): Promise<ApiResponse<Product>> {
-    const url = `${API_ENDPOINTS.products.base}${API_ENDPOINTS.products.detail(productId)}`;
-    return apiCall<Product>(() => axiosInstance.get(url));
-  },
+import { Product, ProductDetail, ProductFilters } from '@/types';
+// [!code --] Removed unused import: getOrSetGuestId
 
-  // Get all products with optional filters
-  async getProducts(params: ProductsQueryParams = {}): Promise<ApiResponse<Product[]>> {
-    const searchParams = new URLSearchParams();
+// Base Host (Product Service)
+// const API_HOST = 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
+const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL
+// Existing endpoint
+const PRODUCTS_URL = `${API_HOST}/products`;
 
-    // Add query parameters - handle arrays by adding same key multiple times
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            if (item !== undefined && item !== null && item !== '') {
-              searchParams.append(key, item.toString());
-            }
-          });
-        } else {
-          searchParams.append(key, value.toString());
-        }
-      }
-    });
+// New endpoint for recommendations
+const RECOMMENDATIONS_URL = `${API_HOST}/products/cart/recommendations`;
 
-    const baseUrl = `${API_ENDPOINTS.products.base}${API_ENDPOINTS.products.list}`;
-    const url = searchParams.toString() ? `${baseUrl}?${searchParams.toString()}` : baseUrl;
+// --- Fetch List (Existing) ---
+export const fetchProducts = async (
+  skip: number = 0, 
+  limit: number = 15, 
+  filters?: ProductFilters
+): Promise<Product[]> => {
+  try {
+    const url = new URL(PRODUCTS_URL);
+    url.searchParams.append('is_card_view', 'true');
+    url.searchParams.append('skip', skip.toString());
+    url.searchParams.append('limit', limit.toString());
 
-    return apiCall<Product[]>(() => axiosInstance.get(url));
-  },
-
-  // Search products by term
-  async searchProducts(searchTerm: string, limit: number = 20): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({ search_term: searchTerm, limit });
-  },
-
-  // Get products by category
-  async getProductsByCategory(category: string, limit: number = 20): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({ category, limit });
-  },
-
-  // Get products by brand
-  async getProductsByBrand(brand: string, limit: number = 20): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({ brand, limit });
-  },
-
-  // Get products by crop
-  async getProductsByCrop(crop: string, limit: number = 20): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({ crop, limit });
-  },
-
-  // Get products by price range
-  async getProductsByPriceRange(
-    minPrice: number,
-    maxPrice: number,
-    limit: number = 20
-  ): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({
-      min_price: minPrice,
-      max_price: maxPrice,
-      limit,
-    });
-  },
-
-  // Get paginated products
-  async getPaginatedProducts(skip: number = 0, limit: number = 20): Promise<ApiResponse<Product[]>> {
-    return this.getProducts({ skip, limit });
-  },
-
-  // Get product filters (extract unique values from products)
-  async getProductFilters(): Promise<ApiResponse<ProductFilters>> {
-    const response = await this.getProducts({ limit: 1000 });
-
-    if (!response.success || !response.res) {
-      return {
-        success: false,
-        error: response.error || 'Failed to fetch products for filters',
-      };
+    if (filters) {
+      if (filters.categories) filters.categories.forEach(cat => url.searchParams.append('category', cat));
+      if (filters.brands) filters.brands.forEach(brand => url.searchParams.append('brand', brand));
+      if (filters.crops) filters.crops.forEach(crop => url.searchParams.append('crop', crop));
+      if (filters.minPrice !== undefined) url.searchParams.append('min_price', filters.minPrice.toString());
+      if (filters.maxPrice !== undefined) url.searchParams.append('max_price', filters.maxPrice.toString());
     }
 
-    const products = response.res;
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error(`Failed to fetch products: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error in productService (list):', error);
+    throw error;
+  }
+};
 
-    const categories = Array.from(new Set(products.map((p) => p.category_name))).filter(Boolean);
-    const brands = Array.from(new Set(products.map((p) => p.brand))).filter(Boolean);
-    const crops = Array.from(
-      new Set(products.flatMap((p) => p.crops?.map((c) => c.crop_name) || []))
-    ).filter(Boolean) as string[];
-    const targetPests = Array.from(
-      new Set(products.flatMap((p) => p.doses?.map((d) => d.target_pest) || []))
-    ).filter(Boolean) as string[];
+// --- Fetch Details (Existing) ---
+export const fetchProductById = async (id: string): Promise<ProductDetail> => {
+  try {
+    const url = `${PRODUCTS_URL}/${id}`;
+    const response = await fetch(url);
 
-    // Calculate price range
-    const prices = products.flatMap((p) => p.variants?.map((v) => v.price) || []);
-    const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-    const maxPrice = prices.length > 0 ? Math.max(...prices) : 10000;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product details: ${response.status}`);
+    }
 
-    return {
-      success: true,
-      res: {
-        categories,
-        brands,
-        crops,
-        priceRange: {
-          min: minPrice,
-          max: maxPrice,
-        },
-        targetPests,
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error in productService (detail):', error);
+    throw error;
+  }
+};
+
+// --- Fetch Similar Products (Existing) ---
+export const fetchSimilarProducts = async (productId: number | string): Promise<Product[]> => {
+  try {
+    const url = `${PRODUCTS_URL}/${productId}/similar`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch similar products: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error in productService (similar):', error);
+    return [];
+  }
+};
+
+// --- Fetch Crop-Based Recommendations (Fixed) ---
+export const fetchRecommendations = async (productIds: number[]): Promise<Product[]> => {
+  // [!code --] Removed: const guestId = getOrSetGuestId();
+
+  try {
+    const url = `${RECOMMENDATIONS_URL}?is_card_view=true`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // [!code --] Removed: 'guest-cart-id': guestId, 
       },
-    };
-  },
+      body: JSON.stringify({
+        product_ids: productIds,
+        limit: 4 
+      }),
+    });
 
-  // Get all product filters from dropdown API
-  async getAllProductFilters(): Promise<ApiResponse<ProductSearchListDropdownResponse>> {
-    const url = `${API_ENDPOINTS.products.base}${API_ENDPOINTS.products.filters}`;
-    return apiCall<ProductSearchListDropdownResponse>(() => axiosInstance.get(url));
-  },
-
-  // Get similar products by product ID
-  async getSimilarProducts(productId: string | number): Promise<ApiResponse<SimilarProduct[]>> {
-    const url = `${API_ENDPOINTS.products.base}/products/${productId}/similar`;
-    return apiCall<SimilarProduct[]>(() => axiosInstance.get(url));
-  },
+    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+    const data = await response.json();
+    return data.recommended_products || [];
+  } catch (error) {
+    console.error('Product API Error (Recommendations):', error);
+    return [];
+  }
 };

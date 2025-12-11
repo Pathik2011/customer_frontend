@@ -1,36 +1,36 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { Providers } from './providers';
 
-const inter = Inter({ subsets: ["latin"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "Sapana Fertilizer - Best Agriculture Products",
-  description:
-    "Get top-quality agriculture products delivered to your farm fast! Fertilizers, Seeds, Herbicides, and more.",
+  title: "Sapana Fertilizers",
+  description: "welcome to Sapana Fertilizers",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${inter.className} antialiased`}>
-        <Header />
-        <main className="min-h-screen">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
           {children}
-        </main>
-        <Footer />
+        </Providers>
       </body>
     </html>
   );
