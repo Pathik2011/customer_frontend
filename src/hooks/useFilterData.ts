@@ -12,8 +12,8 @@ export const useFilterData = () => {
        console.log('🔴 [useFilterData] FETCHING FILTERS FROM API (Not Cached)');
        return fetchFilterOptions();
     },
-    staleTime: QUERY_CONFIG.NAVIGATION.STALE_TIME, 
-    gcTime: QUERY_CONFIG.NAVIGATION.GC_TIME, 
+   staleTime: QUERY_CONFIG.FILTERS.STALE_TIME, 
+    gcTime: QUERY_CONFIG.FILTERS.GC_TIME,
     
     // [!code ++] Debugging
     refetchOnMount: false,

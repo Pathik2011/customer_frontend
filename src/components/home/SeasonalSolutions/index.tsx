@@ -102,8 +102,8 @@ const SeasonalSolutions = ({ data, title }: SeasonalSolutionsProps) => {
           
           {/* Question Panel */}
           <div className="relative shrink-0 bg-[#FFE989] rounded-[12px] w-full lg:w-[504px] h-[300px] lg:h-[348px] flex flex-col justify-center items-center text-center p-0 lg:ml-6 overflow-hidden">
-              <Quote className="absolute top-6 left-6 text-white w-10 h-10 rotate-180 fill-white pointer-events-none" />
-              
+              {/* <Quote className="absolute top-6 left-6 text-white w-10 h-10 rotate-180 fill-white pointer-events-none" /> */}
+              <Quote className="absolute top-0 left-0 text-white w-10 h-10 rotate-180 fill-white pointer-events-none" />
               <div 
                 ref={scrollRef}
                 onScroll={handleScroll}
@@ -116,8 +116,8 @@ const SeasonalSolutions = ({ data, title }: SeasonalSolutionsProps) => {
                   </div>
                 ))}
               </div>
-
-              <Quote className="absolute bottom-12 right-6 text-white w-10 h-10 fill-white pointer-events-none" />
+                <Quote className="absolute bottom-0 right-0 text-white w-10 h-10 fill-white pointer-events-none" />
+              {/* <Quote className="absolute bottom-12 right-6 text-white w-10 h-10 fill-white pointer-events-none" /> */}
           </div>
 
           {/* Product Slider */}

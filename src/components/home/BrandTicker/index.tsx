@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import { useDraggableScroll } from '@/hooks/useDraggableScroll';
 import { ApiBrand } from '@/types/homeApi';
+import { useRouter } from 'next/navigation'; // [!code ++] 1. Import Router
 
 const scrollStyles = `
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -16,8 +17,14 @@ interface BrandTickerProps {
 const BrandTicker = ({ data, title }: BrandTickerProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   useDraggableScroll(scrollRef);
+  const router = useRouter(); // [!code ++] 2. Init Router
 
   if (!data || data.length === 0) return null;
+
+  // [!code ++] 3. Navigation Handler
+  const handleBrandClick = (brandName: string) => {
+    router.push(`/shop?brand=${encodeURIComponent(brandName)}`);
+  };
 
   return (
     <section className="w-full bg-white border-y border-[#E0E2E7] flex items-center overflow-hidden font-jakarta h-[469px] min-[834px]:h-[268px]">
@@ -47,17 +54,18 @@ const BrandTicker = ({ data, title }: BrandTickerProps) => {
             {data.map((brand) => (
                 <div 
                   key={brand.brand_id} 
-                  className="flex justify-center items-center shrink-0 bg-white hover:shadow-sm transition-shadow rounded-xl border border-[#E0E2E7]"
+                  // [!code ++] 4. Click Event & Pointer Cursor
+                  onClick={() => handleBrandClick(brand.brand_name)}
+                  className="flex justify-center items-center shrink-0 bg-white hover:shadow-sm transition-shadow rounded-xl border border-[#E0E2E7] cursor-pointer"
                   style={{ 
-                    // Responsive sizing using CSS variables or strict classes
-                    // Mobile: 106x52, Desktop: 206x100
+                    // Dimensions handled via inner div or utility classes below
                   }} 
                 >
-                   <div className="
+                    <div className="
                       flex items-center justify-center p-2 min-[834px]:p-4
                       w-[106px] h-[52px]
                       min-[834px]:w-[206px] min-[834px]:h-[100px]
-                   ">
+                    ">
                       <img 
                         src={brand.logo_url || "https://placehold.co/200x100?text=Brand"} 
                         alt={brand.brand_name} 

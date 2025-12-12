@@ -2,6 +2,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ApiCrop } from '@/types/homeApi';
+import { useRouter } from 'next/navigation'; // [!code ++] 1. Import useRouter
 
 interface ProductsAccordingToCropProps {
   data: ApiCrop[];
@@ -17,10 +18,17 @@ const BLOB_IMAGES = [
 ];
 
 const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) => {
-  // If this line is hitting, it means 'data' passed from HomeClient is undefined or empty
+  const router = useRouter(); // [!code ++] 2. Initialize Router
+
   if (!data || data.length === 0) return null;
 
   const displayItems = data.slice(0, 5);
+
+  // [!code ++] 3. Helper function for navigation
+  const handleCropClick = (cropName: string) => {
+    // Navigate to shop page with the crop query param
+    router.push(`/shop?crop=${encodeURIComponent(cropName)}`);
+  };
 
   return (
     <section className="w-full bg-white flex justify-center items-center relative overflow-hidden font-jakarta">
@@ -39,7 +47,11 @@ const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) 
                         <span className="hidden lg:block text-sm font-normal text-gray-600 text-left leading-relaxed w-full">Winter-wise Farming: Curated for Crops,<br />Carefully Chosen for You.</span>
                     </p>
                 </div>
-                <button className="hidden lg:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors">
+                {/* [!code highlight] Updated View All to go to Shop */}
+                <button 
+                  onClick={() => router.push('/shop')}
+                  className="hidden lg:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors"
+                >
                     <span className="font-medium text-sm">View All</span>
                     <ArrowRight size={16} />
                 </button>
@@ -50,7 +62,12 @@ const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) 
                 {displayItems.map((crop, index) => {
                     const visual = BLOB_IMAGES[index % BLOB_IMAGES.length];
                     return (
-                        <div key={crop.crop_id} className={`flex flex-col items-center gap-2 lg:gap-4 group cursor-pointer ${index === 4 ? 'col-span-2 flex items-center justify-center' : ''}`}>
+                        <div 
+                          key={crop.crop_id} 
+                          // [!code ++] 4. Add Click Handler
+                          onClick={() => handleCropClick(crop.crop_name)}
+                          className={`flex flex-col items-center gap-2 lg:gap-4 group cursor-pointer ${index === 4 ? 'col-span-2 flex items-center justify-center' : ''}`}
+                        >
                             <div className="relative flex justify-center items-center transition-transform duration-300 group-hover:scale-105 w-[177px] h-[177px] lg:w-[224px] lg:h-[224px]">
                                 <div className="absolute inset-0 z-0">
                                     <img src={visual.bg} alt="" className={`w-full h-full object-contain ${visual.opacity}`} />
@@ -69,7 +86,9 @@ const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) 
 
             {/* Mobile View All */}
             <div className="lg:hidden mt-12 flex justify-center w-full">
-                <button className="flex items-center justify-center gap-1 bg-[#003C22] text-white hover:bg-emerald-900 transition-colors shadow-sm" style={{ width: '113px', height: '40px', borderRadius: '8px' }}>
+                <button 
+                  onClick={() => router.push('/shop')}
+                  className="flex items-center justify-center gap-1 bg-[#003C22] text-white hover:bg-emerald-900 transition-colors shadow-sm" style={{ width: '113px', height: '40px', borderRadius: '8px' }}>
                     <span style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontWeight: 600, fontSize: '14px', lineHeight: '100%' }}>View All</span>
                     <ArrowRight size={16} />
                 </button>

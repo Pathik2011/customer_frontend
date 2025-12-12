@@ -37,8 +37,10 @@ const YouTubeSection = ({ data, title }: YouTubeSectionProps) => {
   // Update dots on scroll
   const handleScroll = () => {
     if (scrollRef.current) {
-        // Mobile snap width is approx 306+gap, Desktop is 330
-        const itemWidth = window.innerWidth < 834 ? 330 : 330; 
+        // [!code changed] Updated math for new gap:
+        // Mobile: 306px card + 80px gap = 386px
+        // Desktop: 306px card + 24px gap = 330px
+        const itemWidth = window.innerWidth < 834 ? 386 : 330; 
         const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
         setActiveIndex(index);
     }
@@ -94,7 +96,8 @@ const YouTubeSection = ({ data, title }: YouTubeSectionProps) => {
           ref={scrollRef}
           onScroll={handleScroll}
           className="
-            flex gap-6 overflow-x-auto no-scrollbar py-4 w-full absolute
+            /* [!code changed] Increased mobile gap to 80px (gap-20) to hide neighbors */
+            flex gap-20 min-[834px]:gap-6 overflow-x-auto no-scrollbar py-4 w-full absolute
             select-none snap-x snap-mandatory lg:snap-none
             cursor-grab active:cursor-grabbing
             top-[180px] min-[834px]:top-[224px]
