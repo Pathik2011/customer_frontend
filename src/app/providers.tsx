@@ -20,7 +20,17 @@ const queryClient = new QueryClient({
 });
 
 // Define the base URL dynamically (Default to localhost)
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+// const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const getAppUrl = () => {
+  if (typeof window !== "undefined") {
+    // This dynamically grabs the current domain (e.g., localhost or main.d123...amplifyapp.com)
+    return window.location.origin;
+  }
+  // Fallback for server-side rendering
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+};
+
+const APP_URL = getAppUrl();
 
 Amplify.configure({
   Auth: {
