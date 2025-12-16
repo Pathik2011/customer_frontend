@@ -43,6 +43,7 @@ export const QUERY_CONFIG = {
     STALE_TIME: 1000 * 60 * 25, 
     GC_TIME: 1000 * 60 * 30,   
     PAGE_SIZE: 15,
+    REVALIDATE_TIME: 300,
   },
 
   // [!code ++] ADD THIS SECTION FOR FILTERS
@@ -61,6 +62,7 @@ export const QUERY_CONFIG = {
   // HOME PAGE SETTINGS
   HOME: {
     REVALIDATE_TIME: 60 * 60, // 1 Hour
+    //REVALIDATE_TIME: 60 , // 60 seconds
     STALE_TIME: 1000 * 60 * 25, 
   },
 

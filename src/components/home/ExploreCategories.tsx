@@ -91,10 +91,10 @@ const ExploreCategories = () => {
                     text-center font-medium group-hover:text-emerald-700 transition-colors text-[#003C22]
                     
                     /* Mobile Text */
-                    text-[10px] leading-tight w-full px-1
+                    text-[14px] leading-tight w-full px-1 
 
                     /* Tablet Text */
-                    md:text-[14px]
+                    md:text-[16px]
 
                     /* Desktop Text */
                     xl:text-[18px] xl:w-[100px] xl:h-[23px]
