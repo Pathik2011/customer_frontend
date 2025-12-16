@@ -139,7 +139,7 @@ const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) 
         // [!code ++] Add this log for testing
         console.log("📳 Haptic Vibrate Triggered!"); 
         
-        const success = navigator.vibrate(50); // Returns true if hardware supports it
+        const success = navigator.vibrate([60, 30, 60]); // Returns true if hardware supports it
         console.log("Vibration success:", success); 
     } else {
         console.log("🔕 Haptics not supported on this device.");
@@ -195,7 +195,7 @@ const ProductsAccordingToCrop = ({ data, title }: ProductsAccordingToCropProps) 
                         >
                             {/* [!code highlight] Converted div to motion.div for animation */}
                             <motion.div 
-                                animate={isClicked ? { scale: 3, filter: 'brightness(1.05)' } : { scale: 1, filter: 'brightness(1)' }}
+                                animate={isClicked ? { scale: 1.05, filter: 'brightness(1.05)' } : { scale: 1, filter: 'brightness(1)' }}
                                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                 className="
                                   relative flex justify-center items-center transition-transform duration-300 group-hover:scale-105
