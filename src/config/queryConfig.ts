@@ -61,7 +61,7 @@ export const QUERY_CONFIG = {
 
   // HOME PAGE SETTINGS
   HOME: {
-    REVALIDATE_TIME: 60 * 60, // 1 Hour
+    //REVALIDATE_TIME: 60 * 60, // 1 Hour
     //REVALIDATE_TIME: 60 , // 60 seconds
     STALE_TIME: 1000 * 60 * 25, 
   },
