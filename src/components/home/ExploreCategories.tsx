@@ -7,7 +7,7 @@ const CATEGORIES = [
   { id: 1, name: 'Fungicide', image: '/Home/Category/Fungicide.png' },
   { id: 2, name: 'Herbicide', image: '/Home/Category/Herbicide.png' },
   { id: 3, name: 'Insecticide', image: '/Home/Category/Insecticide.png' },
-  { id: 4, name: 'Fertilizer', image: '/Home/Category/Fertilizer.png' },
+  { id: 4, name: 'Fertilizers', image: '/Home/Category/Fertilizer.png' },
   { id: 5, name: 'Rodenticide', image: '/Home/Category/Rodenticide.png' },
   { id: 6, name: 'Seeds', image: '/Home/Category/Seeds.png' },
 ];
