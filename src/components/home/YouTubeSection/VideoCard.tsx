@@ -325,7 +325,6 @@ const VideoCard = ({ video }: VideoCardProps) => {
         style={{ height: '190px', borderWidth: '1px' }}
       >
         {isPlaying && videoId ? (
-          // [!code highlight] Added 'mute=1' (auto-play fix), 'playsinline=1' (iOS fix), and 'controls=1' (volume button fix)
           <iframe
             width="100%"
             height="100%"
@@ -358,10 +357,14 @@ const VideoCard = ({ video }: VideoCardProps) => {
         )}
       </div>
 
-      {/* Title */}
+      {/* Title - [!code highlight] RESTORED HIDDEN CLASS FOR MOBILE */}
       <h3 
         onClick={(e) => !isPlaying && handlePlay(e)}
-        className="font-semibold text-gray-900 text-base pl-1 group-hover:text-[#013220] transition-colors truncate" 
+        className="
+            hidden min-[834px]:block 
+            font-semibold text-gray-900 text-base pl-1 
+            group-hover:text-[#013220] transition-colors truncate
+        " 
         title={video.video_title}
       >
         {video.video_title}
