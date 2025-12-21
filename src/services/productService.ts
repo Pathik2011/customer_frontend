@@ -132,9 +132,10 @@ export const fetchProducts = async (
       if (filters.crops) filters.crops.forEach(crop => url.searchParams.append('crop', crop));
       if (filters.minPrice !== undefined) url.searchParams.append('min_price', filters.minPrice.toString());
       if (filters.maxPrice !== undefined) url.searchParams.append('max_price', filters.maxPrice.toString());
+      // [!code ++] Append search term
+      if (filters.searchTerm) url.searchParams.append('search_term', filters.searchTerm);
     }
 
-    // [!code changed] Added next: { revalidate } options
     const response = await fetch(url.toString(), {
       next: { revalidate: QUERY_CONFIG.PRODUCTS.REVALIDATE_TIME }
     });

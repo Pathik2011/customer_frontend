@@ -108,6 +108,7 @@ export interface ProductFilters {
   crops: string[];
   minPrice?: number;
   maxPrice?: number;
+  searchTerm?: string; // [!code ++] Added search support
 }
 
 
