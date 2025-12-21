@@ -149,7 +149,7 @@ const ContactDripContent = () => {
                   <div>
                     <p className="text-xs text-gray-500 font-medium uppercase">Office Address</p>
                     <p className="text-gray-900 font-medium leading-relaxed">
-                      Sapana fertilizers , Near vinay kishan Petrol Pump, Ta & Dist : Gandhianagar<br />
+                      Sapana fertilizers ,<br/> Near vinay kishan Petrol Pump, <br/>Ta & Dist : Gandhianagar,382321<br />
                        Gujarat, India
                     </p>
                   </div>

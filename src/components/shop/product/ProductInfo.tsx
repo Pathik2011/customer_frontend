@@ -27,14 +27,34 @@
   
 //   const lastSyncedQty = useRef(0);
 //   const skipResetRef = useRef(false);
-  
 //   const [loadingVariantId, setLoadingVariantId] = useState<number | null>(null);
 //   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+//   // --- NEW: Ref for the variants container ---
+//   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 //   useEffect(() => {
 //     return () => {
 //       if (debounceTimer.current) clearTimeout(debounceTimer.current);
 //     };
+//   }, []);
+
+//   // --- NEW: Horizontal Mouse Wheel Handler ---
+//   // This makes the desktop mouse wheel scroll horizontally instead of vertically
+//   useEffect(() => {
+//     const el = scrollContainerRef.current;
+//     if (el) {
+//       const onWheel = (e: WheelEvent) => {
+//         if (e.deltaY === 0) return;
+//         // Check if the element actually needs scrolling
+//         if (el.scrollWidth > el.clientWidth) {
+//           e.preventDefault();
+//           el.scrollLeft += e.deltaY;
+//         }
+//       };
+//       el.addEventListener('wheel', onWheel);
+//       return () => el.removeEventListener('wheel', onWheel);
+//     }
 //   }, []);
 
 //   useEffect(() => {
@@ -66,7 +86,6 @@
 //             setLoadingVariantId(selectedVariantId);
 //             await addToCart(selectedVariantId, delta);
 //             lastSyncedQty.current = newQty;
-//             console.log(`Auto-updated variant ${selectedVariantId}. Delta: ${delta}. Sync Level: ${newQty}`);
 //           } catch (error) {
 //             console.error("Auto-update failed", error);
 //             setQuantity(lastSyncedQty.current); 
@@ -80,14 +99,11 @@
 
 //   const handleDirectAddToCart = async (e: React.MouseEvent, variantId: number, qty: number) => {
 //     e.stopPropagation();
-    
 //     if (variantId !== selectedVariantId) {
 //       skipResetRef.current = true;
 //       setSelectedVariantId(variantId);
 //     }
-
 //     setQuantity(1);
-    
 //     try {
 //       setLoadingVariantId(variantId);
 //       await addToCart(variantId, qty);
@@ -106,8 +122,9 @@
 //   return (
 //     <>
 //       <style>{scrollStyles}</style>
-//       <div className="font-jakarta space-y-6 relative">
+//       <div className="font-jakarta space-y-6 relative max-w-full"> {/* Added max-w-full */}
         
+//         {/* Product Name */}
 //         <div>
 //           <h1 
 //             className="mt-0 md:mt-[50px]" 
@@ -138,6 +155,7 @@
 //           </p>
 //         </div>
 
+//         {/* Main Price Display */}
 //         <div className="flex flex-col gap-2 mt-8">
 //           <div className="flex items-center gap-2">
 //             <span style={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 500, fontSize: '28px', lineHeight: '100%', color: '#003C22' }}>
@@ -160,12 +178,24 @@
 
 //         <div className="w-full h-[1px] bg-[#E0E2E7] my-6"></div>
 
-//         <div className="mt-6 w-full">
+//         {/* Variants Section */}
+//         <div className="mt-6 w-full max-w-full overflow-hidden"> {/* Ensure parent prevents overflow */}
 //           <h3 style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontWeight: 600, fontSize: '16px', color: '#000000', marginBottom: '16px' }}>
 //             Variants
 //           </h3>
           
-//           <div className="flex gap-4 items-start overflow-x-auto no-scrollbar pb-2 w-full">
+//           {/* UPDATED CONTAINER:
+//             1. Attached ref={scrollContainerRef}
+//             2. Added max-w-full to ensure it respects parent width
+//           */}
+//           <div 
+//             ref={scrollContainerRef}
+//             className="
+//               flex gap-4 items-start w-full pb-2
+//               overflow-x-auto no-scrollbar flex-nowrap
+//               max-w-full
+//             "
+//           >
 //             {product.variants.map((variant) => {
 //               const isSelected = selectedVariantId === variant.product_variant_id;
 //               const isProcessing = loadingVariantId === variant.product_variant_id;
@@ -190,6 +220,7 @@
 //                     gap: '8px'
 //                   }}
 //                 >
+//                   {/* Variant Size */}
 //                   <div 
 //                     style={{
 //                       fontFamily: '"Plus Jakarta Sans", sans-serif',
@@ -204,6 +235,7 @@
 //                     {variant.size} {variant.uom}
 //                   </div>
 
+//                   {/* Price */}
 //                   <div className="flex items-center gap-[6px] mb-2">
 //                     <span 
 //                       style={{
@@ -233,7 +265,6 @@
 //                   </div>
 
 //                   {/* --- Toggle Logic --- */}
-//                   {/* [!code changed] Show counter if selected (Removed quantity > 0 check) */}
 //                   {isSelected ? (
 //                     <div 
 //                       className="flex items-center bg-white border border-[#E0E2E7] rounded-[12px] animate-in fade-in duration-200"
@@ -241,7 +272,7 @@
 //                     >
 //                       <button 
 //                         onClick={(e) => { e.stopPropagation(); handleQuantity('dec'); }}
-//                         disabled={quantity === 0} // [!code ++] Disable if already 0
+//                         disabled={quantity === 0}
 //                         className="flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 //                         style={{ width: '36px', height: '36px', borderRight: '1px solid #E0E2E7' }}
 //                       >
@@ -281,14 +312,11 @@
 //                       {isProcessing ? 'Adding...' : 'Add to Bag'}
 //                     </button>
 //                   )}
-
 //                 </div>
 //               );
 //             })}
 //           </div>
-          
 //         </div>
-
 //       </div>
 //     </>
 //   );
@@ -326,8 +354,11 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   const [loadingVariantId, setLoadingVariantId] = useState<number | null>(null);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // --- NEW: Ref for the variants container ---
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // [!code ++] FIX: Smart Image Selector
+  // Tries 'image_url' first. If missing, grabs the first 'IMAGE' from the media gallery.
+  const productImage = product.image_url || product.media?.find(m => m.media_type === 'IMAGE')?.url || '';
 
   useEffect(() => {
     return () => {
@@ -335,14 +366,11 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     };
   }, []);
 
-  // --- NEW: Horizontal Mouse Wheel Handler ---
-  // This makes the desktop mouse wheel scroll horizontally instead of vertically
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (el) {
       const onWheel = (e: WheelEvent) => {
         if (e.deltaY === 0) return;
-        // Check if the element actually needs scrolling
         if (el.scrollWidth > el.clientWidth) {
           e.preventDefault();
           el.scrollLeft += e.deltaY;
@@ -380,7 +408,14 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         if (delta !== 0) {
           try {
             setLoadingVariantId(selectedVariantId);
-            await addToCart(selectedVariantId, delta);
+            await addToCart(
+                selectedVariantId, 
+                delta,
+                { 
+                    name: product.product_name, 
+                    image: productImage // [!code changed] Use the robust image variable
+                }
+            );
             lastSyncedQty.current = newQty;
           } catch (error) {
             console.error("Auto-update failed", error);
@@ -402,7 +437,14 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     setQuantity(1);
     try {
       setLoadingVariantId(variantId);
-      await addToCart(variantId, qty);
+      await addToCart(
+        variantId, 
+        qty, 
+        { 
+            name: product.product_name, 
+            image: productImage // [!code changed] Use the robust image variable
+        }
+      );
       lastSyncedQty.current = 1; 
     } catch (error) {
       console.error("Failed to add to bag", error);
@@ -418,7 +460,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   return (
     <>
       <style>{scrollStyles}</style>
-      <div className="font-jakarta space-y-6 relative max-w-full"> {/* Added max-w-full */}
+      <div className="font-jakarta space-y-6 relative max-w-full">
         
         {/* Product Name */}
         <div>
@@ -475,15 +517,11 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         <div className="w-full h-[1px] bg-[#E0E2E7] my-6"></div>
 
         {/* Variants Section */}
-        <div className="mt-6 w-full max-w-full overflow-hidden"> {/* Ensure parent prevents overflow */}
+        <div className="mt-6 w-full max-w-full overflow-hidden"> 
           <h3 style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', fontWeight: 600, fontSize: '16px', color: '#000000', marginBottom: '16px' }}>
             Variants
           </h3>
           
-          {/* UPDATED CONTAINER:
-            1. Attached ref={scrollContainerRef}
-            2. Added max-w-full to ensure it respects parent width
-          */}
           <div 
             ref={scrollContainerRef}
             className="
