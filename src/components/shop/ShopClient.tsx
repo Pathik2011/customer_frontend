@@ -20,16 +20,17 @@ export default function ShopClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // 1. Initialize State from URL (Ensures Client Key matches Server Key)
+  // 1. Initialize State
   const [filters, setFilters] = useState<ProductFilters>(() => ({
     categories: searchParams.getAll('category'),
     brands: searchParams.getAll('brand'),
     crops: searchParams.getAll('crop'),
     minPrice: searchParams.get('min_price') ? Number(searchParams.get('min_price')) : undefined,
     maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
+    searchTerm: searchParams.get('search_term') || undefined, // [!code ++]
   }));
 
-  // 2. Sync URL Changes to State (Browser Back Button support)
+  // 2. Sync URL Changes
   useEffect(() => {
     setFilters({
       categories: searchParams.getAll('category'),
@@ -37,12 +38,13 @@ export default function ShopClient() {
       crops: searchParams.getAll('crop'),
       minPrice: searchParams.get('min_price') ? Number(searchParams.get('min_price')) : undefined,
       maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
+      searchTerm: searchParams.get('search_term') || undefined, // [!code ++]
     });
   }, [searchParams]);
 
   // 3. Filter Change Handler
   const handleFilterChange = (newFilters: ProductFilters) => {
-    setFilters(newFilters); // Optimistic Update
+    setFilters(newFilters);
 
     const params = new URLSearchParams();
     newFilters.categories.forEach(c => params.append('category', c));
@@ -51,6 +53,7 @@ export default function ShopClient() {
     
     if (newFilters.minPrice !== undefined) params.set('min_price', newFilters.minPrice.toString());
     if (newFilters.maxPrice !== undefined) params.set('max_price', newFilters.maxPrice.toString());
+    if (newFilters.searchTerm) params.set('search_term', newFilters.searchTerm); // [!code ++]
 
     router.push(`/shop?${params.toString()}`, { scroll: false });
   };
@@ -71,7 +74,6 @@ export default function ShopClient() {
            />
         </div>
         
-        {/* The Grid uses useProducts hook internally, which picks up Hydrated data */}
         <ProductGrid filters={filters} />
       </main>
 
