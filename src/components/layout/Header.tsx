@@ -429,16 +429,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, User, ChevronDown, Menu, X, ChevronRight, LogOut, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // [!code ++]
+import { useRouter } from 'next/navigation'; 
 import { fetchFilterOptions } from '@/services/filterService'; 
-import { fetchProducts } from '@/services/productService'; // [!code ++]
-import { FilterApiResponse, Product } from '@/types'; // [!code ++]
+import { fetchProducts } from '@/services/productService'; 
+import { FilterApiResponse, Product } from '@/types'; 
 import { useCart } from '@/context/CartContext'; 
 import { useAuth } from '@/context/AuthContext'; 
 import LoginPopup from '@/components/auth/LoginPopup';
 
 const Header = () => {
-  const router = useRouter(); // [!code ++]
+  const router = useRouter(); 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   
@@ -446,12 +446,15 @@ const Header = () => {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [animate, setAnimate] = useState(false);
 
-  // --- Search State [!code ++] ---
+  // --- Search State ---
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  
+  // [!code changed] Added separate ref for Mobile Search
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   const { cartCount } = useCart(); 
   const { isAuthenticated, logout } = useAuth(); 
@@ -487,14 +490,13 @@ const Header = () => {
     }
   }, [isMobileMenuOpen, isLoginOpen]);
 
-  // --- Search Logic [!code ++] ---
+  // --- Search Logic ---
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm.trim().length > 1) {
         setIsSearching(true);
         setShowDropdown(true);
         try {
-          // Fetch small list (limit 5) for dropdown
           const products = await fetchProducts(0, 5, { searchTerm: searchTerm, categories: [], brands: [], crops: [] });
           setSearchResults(products);
         } catch (error) {
@@ -507,15 +509,21 @@ const Header = () => {
         setSearchResults([]);
         setShowDropdown(false);
       }
-    }, 400); // 400ms debounce
+    }, 400); 
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  // Close dropdown on click outside
+  // [!code changed] Updated "Click Outside" to check BOTH Desktop and Mobile refs
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      
+      const isDesktopInside = desktopSearchRef.current && desktopSearchRef.current.contains(target);
+      const isMobileInside = mobileSearchRef.current && mobileSearchRef.current.contains(target);
+
+      // Only close if click is outside BOTH containers
+      if (!isDesktopInside && !isMobileInside) {
         setShowDropdown(false);
       }
     };
@@ -567,9 +575,9 @@ const Header = () => {
                     </div>
                 </Link>
 
-                {/* --- DESKTOP SEARCH BAR [!code highlight] --- */}
+                {/* --- DESKTOP SEARCH BAR --- */}
                 <div 
-                  ref={searchRef}
+                  ref={desktopSearchRef} // [!code changed] Renamed ref
                   className="hidden lg:block flex-1 mx-6 lg:mx-0 lg:absolute lg:left-[50%] lg:-translate-x-1/2 lg:top-[26px] lg:w-[40%] lg:max-w-[470px] lg:h-[46px] z-30"
                 >
                     <form onSubmit={handleSearchSubmit} className="relative w-full h-full">
@@ -578,7 +586,7 @@ const Header = () => {
                         placeholder="Search your product..." 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full h-[40px] lg:h-full bg-gray-100 rounded-[40px] text-gray-900 border border-gray-200 px-6 pl-12 text-sm outline-none focus:ring-1 focus:ring-emerald-600 transition-shadow" 
+                        className="w-full h-[40px] lg:h-full bg-gray-100 rounded-[40px] border border-gray-200 px-6 pl-12 text-sm text-gray-900 outline-none focus:ring-1 focus:ring-emerald-600 transition-shadow" 
                       />
                       <Search className="w-4 h-4 absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
                       
@@ -663,19 +671,22 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* --- MOBILE SEARCH BAR [!code highlight] --- */}
-            <div className="mt-3 lg:hidden relative w-full">
+            {/* --- MOBILE SEARCH BAR --- */}
+            <div 
+              ref={mobileSearchRef} // [!code changed] Added Ref here!
+              className="mt-3 lg:hidden relative w-full"
+            >
                 <form onSubmit={handleSearchSubmit}>
                   <input 
                     type="text" 
                     placeholder="Search product..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full h-[44px] bg-gray-100 rounded-full border border-gray-200 px-4 pl-10  text-sm outline-none focus:ring-1 focus:ring-emerald-600 text-gray-900" 
+                    className="w-full h-[44px] bg-gray-100 rounded-full border border-gray-200 px-4 pl-10 text-sm text-gray-900 outline-none focus:ring-1 focus:ring-emerald-600" 
                   />
                   <Search className="w-4 h-4 absolute left-3.5 top-[14px] text-gray-400" />
                 </form>
-                {/* Simplified dropdown for mobile (optional, usually mobile uses full page or simpler view, but keeping consistent) */}
+                {/* Simplified dropdown for mobile */}
                 {showDropdown && searchTerm.length > 1 && (
                    <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-2">
                       {isSearching ? (
@@ -713,7 +724,7 @@ const Header = () => {
         </div>
     </div>
 
-    {/* --- MOBILE DRAWER (Unchanged logic, just keeping structure) --- */}
+    {/* --- MOBILE DRAWER (Unchanged) --- */}
     <div className={`fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setIsMobileMenuOpen(false)} />
     <div className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
        <div className="p-4 flex justify-between items-center border-b border-gray-100">
@@ -721,7 +732,6 @@ const Header = () => {
           <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} className="text-gray-600"/></button>
        </div>
        
-       {/* Scrollable Container */}
        <div className="p-4 overflow-y-auto h-[calc(100%-60px)]">
           <ul className="space-y-2">
              {mobileMenuItems.map((item) => (
