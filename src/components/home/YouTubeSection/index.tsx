@@ -406,7 +406,7 @@ const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
             
             {/* Dynamic Subtitle with Responsive Typography */}
             <p 
-                className="text-[#4D4D4D] font-semibold text-[14px] min-[834px]:text-[15px] leading-[26px] tracking-[0.01em] font-jakarta"
+                className="text-[#4D4D4D] font-semibold text-[14px] min-[834px]:text-[15px] leading-[26px] tracking-[0.01em] font-jakarta "
                 style={{
                     maxWidth: '283px', 
                 }}

@@ -861,7 +861,7 @@ const SeasonalSolutions = ({ data, title, subtitle }: SeasonalSolutionsProps) =>
         </h2>
         
         {/* [!code changed] Reverted to Old Typography (Simple) */}
-        <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto -mt-4 lg:-mt-8 px-4 text-sm font-medium">
+        <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto -mt-4 lg:-mt-8 px-4 text-sm font-semibold">
            {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}
         </p>
         

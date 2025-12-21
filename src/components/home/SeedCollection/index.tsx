@@ -645,7 +645,7 @@ const SeedCollection = ({ data, title, subtitle }: SeedCollectionProps) => {
                         
                         {/* Dynamic Subtitle */}
                         <p 
-                            className="text-[#4D4D4D] text-[14px] min-[834px]:text-[15px] font-semibold leading-[26px] tracking-[0.01em] font-jakarta max-w-[283px] min-[834px]:max-w-md mx-auto min-[834px]:mx-0"
+                            className="text-[#4D4D4D]  text-[14px] min-[834px]:text-[15px] font-semibold leading-[26px] tracking-[0.01em] font-jakarta max-w-[283px] min-[834px]:max-w-md mx-auto min-[834px]:mx-0"
                         >
                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}
                         </p>
