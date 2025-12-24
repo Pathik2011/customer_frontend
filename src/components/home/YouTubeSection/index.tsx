@@ -484,6 +484,182 @@
 // };
 
 // export default YouTubeSection;
+// 'use client';
+
+// import React, { useRef, useState } from 'react';
+// import { ArrowLeft, ArrowRight } from 'lucide-react';
+// import { useDraggableScroll } from '@/hooks/useDraggableScroll';
+// import { ApiYoutubeVideo } from '@/types/homeApi';
+// import VideoCard from './VideoCard';
+
+// const hideScrollStyle = `
+//   .no-scrollbar::-webkit-scrollbar { display: none; }
+//   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+// `;
+
+// interface YouTubeSectionProps {
+//   data: ApiYoutubeVideo[];
+//   title?: string;
+//   subtitle?: string;
+// }
+
+// const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
+//   const scrollRef = useRef<HTMLDivElement>(null);
+//   const [activeIndex, setActiveIndex] = useState(0);
+
+//   useDraggableScroll(scrollRef);
+
+//   if (!data || data.length === 0) return null;
+
+//   const handleScrollLeft = () => {
+//     if (scrollRef.current) scrollRef.current.scrollBy({ left: -330, behavior: 'smooth' });
+//   };
+
+//   const handleScrollRight = () => {
+//     if (scrollRef.current) scrollRef.current.scrollBy({ left: 330, behavior: 'smooth' });
+//   };
+
+//   const handleScroll = () => {
+//     if (scrollRef.current) {
+//         // Mobile width (306 + 80 gap) vs Desktop width (306 + 24 gap)
+//         const itemWidth = window.innerWidth < 834 ? 386 : 330; 
+//         const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
+//         setActiveIndex(index);
+//     }
+//   };
+
+//   return (
+//     <section 
+//       className="w-full flex justify-center items-center relative overflow-hidden font-jakarta h-[523px] min-[834px]:h-[624px]"
+//     >
+//       <style>{hideScrollStyle}</style>
+
+//       {/* Background Image */}
+//       <div className="absolute inset-0 z-0 bg-white">
+//         <img 
+//           src="/Home/Youtube/1.png" 
+//           alt="Youtube Background" 
+//           className="w-full h-full object-cover opacity-50"
+//         />
+//         <div 
+//           className="absolute inset-0"
+//           style={{
+//             background: 'linear-gradient(116.33deg, rgba(255, 255, 255, 0.5) 0.34%, rgba(255, 255, 255, 0.7) 98.84%)'
+//           }}
+//         ></div>
+//       </div>
+
+//       <div className="w-full max-w-[1298px] h-full relative z-10 flex flex-col items-center">
+        
+//         {/* --- Header Section --- */}
+//         <div 
+//             className="flex flex-col items-center text-center absolute top-[40px] min-[834px]:top-[80px]"
+//         >
+//             <h2 
+//                 className="text-[#000000] mb-4 font-medium leading-[100%] text-[20px] min-[834px]:text-[28px]"
+//                 style={{ fontFamily: '"Google Sans", sans-serif' }}
+//             >
+//                 {title || "Watch Us On Youtube"}
+//             </h2>
+            
+//             <p 
+//                 className="text-[#4D4D4D] font-semibold text-[14px] min-[834px]:text-[15px] leading-[26px] tracking-[0.01em] font-jakarta"
+//                 style={{ maxWidth: '283px' }}
+//             >
+//                 {subtitle || "Stay updated with the latest farming techniques and product launches."}
+//             </p>
+//         </div>
+        
+//         {/* --- Video Scroll Container --- */}
+//         <div 
+//           ref={scrollRef}
+//           onScroll={handleScroll}
+//           className="
+//             flex 
+//             /* [!code highlight] GAP LOGIC: 80px (gap-20) on Mobile to isolate 1 video. 24px (gap-6) on Desktop. */
+//             gap-20 min-[834px]:gap-6 
+            
+//             w-full absolute 
+//             top-[180px] min-[834px]:top-[224px]
+            
+//             overflow-x-auto no-scrollbar 
+//             select-none snap-x snap-mandatory 
+            
+//             /* [!code highlight] ALIGNMENT FIX: Removed 'justify-center'. 'justify-start' prevents the 1st video cut-off bug. */
+//             justify-start
+//             px-4 xl:px-0
+//           "
+//         >
+//           {/* Mobile Spacer (Centers the single video) */}
+//           <div className="block min-[834px]:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
+
+//           {data.map((video) => (
+//              <div key={video.video_id} className="snap-center shrink-0 flex justify-center">
+//                  {/* Card Sizing Wrapper 
+//                     - Mobile: Fixed 306px
+//                     - Tablet (834-1024): 340px (Responsive)
+//                     - Desktop (>1024): Fixed 306px (Old Code)
+//                  */}
+//                  <div className="
+//                     w-[306px] 
+//                     min-[834px]:w-[340px] 
+//                     lg:w-[306px] 
+//                     h-auto
+//                  ">
+//                     <VideoCard video={video} />
+//                  </div>
+                 
+//                  {/* Mobile Title */}
+//                  <div className="min-[834px]:hidden mt-4 text-center absolute top-[190px]">
+//                     <h3 className="text-[15px] font-semibold text-black font-jakarta leading-[100%] tracking-[0.01em] truncate w-[306px]">
+//                         {video.video_title}
+//                     </h3>
+//                  </div>
+//              </div>
+//           ))}
+
+//           {/* Mobile Spacer End */}
+//           <div className="block min-[834px]:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
+          
+//           {/* Desktop Right Padding Safety */}
+//           <div className="hidden min-[834px]:block shrink-0" style={{ width: '24px' }}></div>
+//         </div>
+
+//         {/* --- Slider Controls --- */}
+//         <div 
+//             className="flex items-center justify-center gap-4 absolute"
+//             style={{ 
+//                 bottom: '40px', 
+//                 width: '100%' 
+//             }}
+//         >
+//             <button onClick={handleScrollLeft} className="p-2 transition-colors hover:text-[#003C22]">
+//                 <ArrowLeft size={24} className="text-[#003C22]" />
+//             </button>
+
+//             {/* Pagination Dots */}
+//             <div className="flex gap-2">
+//                 {[0, 1, 2].map((dotIndex) => (
+//                     <div 
+//                         key={dotIndex}
+//                         className={`w-2.5 h-2.5 rounded-full transition-colors ${
+//                              (activeIndex % 3 === dotIndex) ? 'bg-[#003C22]' : 'bg-[#003C22]/30'
+//                         }`}
+//                     ></div>
+//                 ))}
+//             </div>
+
+//             <button onClick={handleScrollRight} className="p-2 transition-colors hover:text-[#003C22]">
+//                 <ArrowRight size={24} className="text-[#003C22]" />
+//             </button>
+//         </div>
+
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default YouTubeSection;
 'use client';
 
 import React, { useRef, useState } from 'react';
@@ -521,7 +697,6 @@ const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
 
   const handleScroll = () => {
     if (scrollRef.current) {
-        // Mobile width (306 + 80 gap) vs Desktop width (306 + 24 gap)
         const itemWidth = window.innerWidth < 834 ? 386 : 330; 
         const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
         setActiveIndex(index);
@@ -564,7 +739,9 @@ const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
             
             <p 
                 className="text-[#4D4D4D] font-semibold text-[14px] min-[834px]:text-[15px] leading-[26px] tracking-[0.01em] font-jakarta"
-                style={{ maxWidth: '283px' }}
+                style={{
+                    maxWidth: '283px', 
+                }}
             >
                 {subtitle || "Stay updated with the latest farming techniques and product launches."}
             </p>
@@ -575,54 +752,26 @@ const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
           ref={scrollRef}
           onScroll={handleScroll}
           className="
-            flex 
-            /* [!code highlight] GAP LOGIC: 80px (gap-20) on Mobile to isolate 1 video. 24px (gap-6) on Desktop. */
-            gap-20 min-[834px]:gap-6 
-            
-            w-full absolute 
+            flex gap-20 min-[834px]:gap-6 overflow-x-auto no-scrollbar py-4 w-full absolute
+            select-none snap-x snap-mandatory lg:snap-none
+            cursor-grab active:cursor-grabbing
             top-[180px] min-[834px]:top-[224px]
-            
-            overflow-x-auto no-scrollbar 
-            select-none snap-x snap-mandatory 
-            
-            /* [!code highlight] ALIGNMENT FIX: Removed 'justify-center'. 'justify-start' prevents the 1st video cut-off bug. */
-            justify-start
-            px-4 xl:px-0
           "
         >
-          {/* Mobile Spacer (Centers the single video) */}
-          <div className="block min-[834px]:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
+          {/* Spacers for Centering */}
+          <div className="block lg:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
 
           {data.map((video) => (
-             <div key={video.video_id} className="snap-center shrink-0 flex justify-center">
-                 {/* Card Sizing Wrapper 
-                    - Mobile: Fixed 306px
-                    - Tablet (834-1024): 340px (Responsive)
-                    - Desktop (>1024): Fixed 306px (Old Code)
-                 */}
-                 <div className="
-                    w-[306px] 
-                    min-[834px]:w-[340px] 
-                    lg:w-[306px] 
-                    h-auto
-                 ">
+             <div key={video.video_id} className="snap-center shrink-0">
+                 {/* [!code changed] Changed 'h-[190px]' to 'h-auto' so it fits the Title too! */}
+                 <div className="w-[306px] h-auto min-[834px]:w-auto min-[834px]:h-auto">
                     <VideoCard video={video} />
-                 </div>
-                 
-                 {/* Mobile Title */}
-                 <div className="min-[834px]:hidden mt-4 text-center absolute top-[190px]">
-                    <h3 className="text-[15px] font-semibold text-black font-jakarta leading-[100%] tracking-[0.01em] truncate w-[306px]">
-                        {video.video_title}
-                    </h3>
                  </div>
              </div>
           ))}
 
-          {/* Mobile Spacer End */}
-          <div className="block min-[834px]:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
-          
-          {/* Desktop Right Padding Safety */}
-          <div className="hidden min-[834px]:block shrink-0" style={{ width: '24px' }}></div>
+          <div className="block lg:hidden shrink-0" style={{ width: 'calc(50vw - 153px)' }}></div>
+          <div className="hidden lg:block shrink-0" style={{ width: '24px' }}></div>
         </div>
 
         {/* --- Slider Controls --- */}

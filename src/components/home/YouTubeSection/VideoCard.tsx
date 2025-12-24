@@ -375,6 +375,214 @@
 
 // export default VideoCard;
 
+// 'use client';
+// import React, { useState } from 'react';
+// import { Play } from 'lucide-react';
+// import { VideoItem } from './types';
+
+// interface VideoCardProps {
+//   video: VideoItem;
+// }
+
+// // Helper to extract YouTube ID
+// const getVideoId = (url: string) => {
+//   try {
+//     if (url.includes('youtu.be')) {
+//       return url.split('youtu.be/')[1]?.split('?')[0];
+//     } else if (url.includes('v=')) {
+//       return url.split('v=')[1]?.split('&')[0];
+//     }
+//   } catch (e) {
+//     console.error("Error parsing YouTube URL", e);
+//   }
+//   return null;
+// };
+
+// // Helper to get thumbnail
+// const getThumbnail = (url: string, fallback: string | null) => {
+//   if (fallback) return fallback;
+//   const videoId = getVideoId(url);
+//   if (videoId) {
+//     return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+//   }
+//   return 'https://placehold.co/400x300?text=No+Thumbnail';
+// };
+
+// const VideoCard = ({ video }: VideoCardProps) => {
+//   const [isPlaying, setIsPlaying] = useState(false);
+//   const thumbnail = getThumbnail(video.youtube_url, video.thumbnail_url);
+//   const videoId = getVideoId(video.youtube_url);
+
+//   const handlePlay = (e: React.MouseEvent) => {
+//     e.stopPropagation();
+//     setIsPlaying(true);
+//   };
+
+//   return (
+//     <div 
+//       className="shrink-0 flex flex-col gap-3 group cursor-pointer snap-center"
+//       // [!code highlight] RESTORED: Exact Desktop width
+//       style={{ width: '306px' }}
+//     >
+//       {/* Video / Thumbnail Container */}
+//       <div 
+//         className="relative w-full rounded-[12px] overflow-hidden border border-[#F3F3F5] bg-gray-100 shadow-sm"
+//         // [!code highlight] RESTORED: Exact Desktop height
+//         style={{ height: '190px', borderWidth: '1px' }}
+//       >
+//         {isPlaying && videoId ? (
+//           <iframe
+//             width="100%"
+//             height="100%"
+//             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&rel=0`}
+//             title={video.video_title}
+//             frameBorder="0"
+//             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//             allowFullScreen
+//             className="w-full h-full"
+//           ></iframe>
+//         ) : (
+//           <div 
+//             onClick={handlePlay}
+//             className="w-full h-full relative"
+//           >
+//             <img 
+//               src={thumbnail} 
+//               alt={video.video_title} 
+//               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+//             />
+            
+//             {/* Play Button Overlay */}
+//             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+//               <div className="w-12 h-8 bg-red-600 rounded-[8px] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+//                 <Play size={16} fill="white" className="text-white ml-0.5" />
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Title */}
+//       <h3 
+//         onClick={(e) => !isPlaying && handlePlay(e)}
+//         className="
+//             hidden min-[834px]:block 
+//             font-semibold text-gray-900 text-base pl-1 
+//             group-hover:text-[#013220] transition-colors truncate
+//         " 
+//         title={video.video_title}
+//       >
+//         {video.video_title}
+//       </h3>
+//     </div>
+//   );
+// };
+
+// export default VideoCard;
+// 'use client';
+// import React, { useState } from 'react';
+// import { Play } from 'lucide-react';
+// import { VideoItem } from './types';
+
+// interface VideoCardProps {
+//   video: VideoItem;
+// }
+
+// // Helper to extract YouTube ID
+// const getVideoId = (url: string) => {
+//   try {
+//     if (url.includes('youtu.be')) {
+//       return url.split('youtu.be/')[1]?.split('?')[0];
+//     } else if (url.includes('v=')) {
+//       return url.split('v=')[1]?.split('&')[0];
+//     }
+//   } catch (e) {
+//     console.error("Error parsing YouTube URL", e);
+//   }
+//   return null;
+// };
+
+// // Helper to get thumbnail
+// const getThumbnail = (url: string, fallback: string | null) => {
+//   if (fallback) return fallback;
+//   const videoId = getVideoId(url);
+//   if (videoId) {
+//     return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+//   }
+//   return 'https://placehold.co/400x300?text=No+Thumbnail';
+// };
+
+// const VideoCard = ({ video }: VideoCardProps) => {
+//   const [isPlaying, setIsPlaying] = useState(false);
+//   const thumbnail = getThumbnail(video.youtube_url, video.thumbnail_url);
+//   const videoId = getVideoId(video.youtube_url);
+
+//   const handlePlay = (e: React.MouseEvent) => {
+//     e.stopPropagation();
+//     setIsPlaying(true);
+//   };
+
+//   return (
+//     <div 
+//       className="shrink-0 flex flex-col gap-3 group cursor-pointer snap-center"
+//       style={{ width: '306px' }}
+//     >
+//       {/* Video / Thumbnail Container */}
+//       <div 
+//         className="relative w-full rounded-[12px] overflow-hidden border border-[#F3F3F5] bg-gray-100 shadow-sm"
+//         style={{ height: '190px', borderWidth: '1px' }}
+//       >
+//         {isPlaying && videoId ? (
+//           // [!code changed] Removed 'mute=1', Kept 'controls=1' and 'playsinline=1'
+//           <iframe
+//             width="100%"
+//             height="100%"
+//             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&crel=0`}
+//             title={video.video_title}
+//             frameBorder="0"
+//             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//             allowFullScreen
+//             className="w-full h-full"
+//           ></iframe>
+//         ) : (
+//           // Thumbnail with Play Button
+//           <div 
+//             onClick={handlePlay}
+//             className="w-full h-full relative"
+//           >
+//             <img 
+//               src={thumbnail} 
+//               alt={video.video_title} 
+//               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+//             />
+            
+//             {/* Play Button Overlay */}
+//             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+//               <div className="w-12 h-8 bg-red-600 rounded-[8px] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+//                 <Play size={16} fill="white" className="text-white ml-0.5" />
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Title - [!code changed] Removed 'hidden' class to show title on mobile too */}
+//       <h3 
+//         onClick={(e) => !isPlaying && handlePlay(e)}
+//         className="
+//             block 
+//             font-semibold text-gray-900 text-base pl-1 
+//             group-hover:text-[#013220] transition-colors truncate
+//         " 
+//         title={video.video_title}
+//       >
+//         {video.video_title}
+//       </h3>
+//     </div>
+//   );
+// };
+
+// export default VideoCard;
 'use client';
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
@@ -421,20 +629,19 @@ const VideoCard = ({ video }: VideoCardProps) => {
   return (
     <div 
       className="shrink-0 flex flex-col gap-3 group cursor-pointer snap-center"
-      // [!code highlight] RESTORED: Exact Desktop width
       style={{ width: '306px' }}
     >
       {/* Video / Thumbnail Container */}
       <div 
         className="relative w-full rounded-[12px] overflow-hidden border border-[#F3F3F5] bg-gray-100 shadow-sm"
-        // [!code highlight] RESTORED: Exact Desktop height
         style={{ height: '190px', borderWidth: '1px' }}
       >
         {isPlaying && videoId ? (
+          // [!code changed] Removed 'mute', added 'controls=1' (Volume) & 'playsinline=1'
           <iframe
             width="100%"
             height="100%"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&rel=0`}
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&controls=1&rel=0`}
             title={video.video_title}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -442,6 +649,7 @@ const VideoCard = ({ video }: VideoCardProps) => {
             className="w-full h-full"
           ></iframe>
         ) : (
+          // Thumbnail with Play Button
           <div 
             onClick={handlePlay}
             className="w-full h-full relative"
@@ -462,11 +670,11 @@ const VideoCard = ({ video }: VideoCardProps) => {
         )}
       </div>
 
-      {/* Title */}
+      {/* Title - [!code changed] REMOVED 'hidden' class so it always shows under the video */}
       <h3 
         onClick={(e) => !isPlaying && handlePlay(e)}
         className="
-            hidden min-[834px]:block 
+            block
             font-semibold text-gray-900 text-base pl-1 
             group-hover:text-[#013220] transition-colors truncate
         " 
