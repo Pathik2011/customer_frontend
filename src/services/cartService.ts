@@ -1,7 +1,7 @@
 import { getOrSetGuestId } from '@/utils/guestIdentity';
 
 const API_BASE_URL = 'https://zko23b3pf4.execute-api.ap-south-1.amazonaws.com/dev';
-
+const CART_URL = `${API_BASE_URL}/cart`;
 export const cartService = {
   /**
    * Adds items to the cart (Delta quantity).
@@ -77,5 +77,39 @@ export const cartService = {
       console.error('Cart API Error (Fetch):', error);
       throw error;
     }
+  }
+};
+export const mergeCart = async (customerId: string, guestId: string): Promise<void> => {
+  console.log("---------------------------------------------");
+  console.log("🛒 [cartService] mergeCart() STARTING...");
+
+  try {
+    const response = await fetch(`${CART_URL}/merge`, {
+      method: 'POST',
+      keepalive: true, // Ensures request survives page reload
+      headers: {
+        'Content-Type': 'application/json',
+        'customer-id': customerId,
+        'guest-cart-id': guestId,
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!response.ok) {
+      // [!code changed] READ THE SERVER ERROR MESSAGE
+      const errorText = await response.text(); 
+      console.error("   ❌ [cartService] Merge API FAILED. Status:", response.status);
+      console.error("   ❌ [cartService] Server Message:", errorText);
+      
+      // Pass this message up so AuthContext can save it to LocalStorage
+      throw new Error(`Server responded ${response.status}: ${errorText}`);
+    }
+
+    console.log("   ✅ [cartService] Merge API SUCCESS!");
+    console.log("---------------------------------------------");
+
+  } catch (error) {
+    console.error('   ❌ [cartService] Network/Logic Error in mergeCart:', error);
+    throw error;
   }
 };

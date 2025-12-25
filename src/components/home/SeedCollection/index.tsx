@@ -637,7 +637,7 @@ const SeedCollection = ({ data, title, subtitle }: SeedCollectionProps) => {
                     <div className="flex flex-col items-center min-[834px]:items-start">
                         {/* Dynamic Title */}
                         <h2 
-                            className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
+                            className="text-[#000000] mb-2 min-[834px]:mb-3 font-bold text-[20px] min-[834px]:text-[28px] leading-[100%]" 
                             style={{ fontFamily: '"Google Sans", sans-serif' }}
                         >
                            {title || "Seeds"}

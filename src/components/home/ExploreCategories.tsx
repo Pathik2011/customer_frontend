@@ -22,7 +22,7 @@ const ExploreCategories = () => {
           className="text-center text-[#000000] mb-8 xl:mb-10 flex items-center justify-center"
           style={{
             fontFamily: '"Google Sans", sans-serif',
-            fontWeight: 500,
+            fontWeight: 50,
             lineHeight: '100%',
           }}
         >
