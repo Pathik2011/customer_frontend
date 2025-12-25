@@ -1,3 +1,133 @@
+// // // 'use client';
+
+// // // import React from 'react';
+// // // import { ArrowRight } from 'lucide-react';
+// // // import { ApiProduct } from '@/types/homeApi';
+// // // import ProductCard from '@/components/shop/ProductCard'; 
+// // // import { Product, ProductVariant } from '@/types'; 
+
+// // // const scrollStyles = `
+// // //   .no-scrollbar::-webkit-scrollbar { display: none; }
+// // //   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+// // // `;
+
+// // // interface UpcomingSeasonProps {
+// // //   data: ApiProduct[];
+// // //   title?: string;
+// // //   subtitle?: string; // [!code ++
+// // // }
+
+// // // const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
+// // //   if (!data || data.length === 0) return null;
+
+// // //   const displayProducts: Product[] = data.slice(0, 5).map((apiItem) => {
+// // //     const firstVar = apiItem.product_variants[0] || {};
+    
+// // //     const variants: ProductVariant[] = apiItem.product_variants.map(v => ({
+// // //       product_variant_id: v.product_variant_id,
+// // //       size: v.size,
+// // //       uom: v.uom,
+// // //       price: v.price,
+// // //       discounted_price: v.discounted_price,
+// // //       discount: 0,
+// // //       is_active: true
+// // //     }));
+
+// // //     return {
+// // //       product_id: apiItem.product_id,
+// // //       product_name: apiItem.product_name,
+// // //       brand_name: apiItem.brand?.brand_name || '',
+// // //       image_url: apiItem.image,
+// // //       product_variant_id: firstVar.product_variant_id,
+// // //       size: firstVar.size,
+// // //       uom: firstVar.uom,
+// // //       price: firstVar.price,
+// // //       discounted_price: firstVar.discounted_price,
+// // //       discount: 0,
+// // //       variants: variants
+// // //     };
+// // //   });
+
+// // //   return (
+// // //     <section className="w-full flex justify-center font-jakarta bg-white">
+// // //       <style>{scrollStyles}</style>
+// // //       <div className="relative w-full h-[539px] min-[834px]:h-[648px] overflow-hidden">
+        
+// // //         {/* Background */}
+// // //         <div className="absolute inset-0 z-0 bg-black/0.6"> 
+// // //           <img 
+// // //             src="/Home/Upcoming/Doodle.png" 
+// // //             alt="Upcoming Seasons Pattern" 
+// // //             className="w-full h-full object-cover" 
+// // //           />
+// // //         </div>
+
+// // //         {/* Content */}
+// // //         <div className="relative z-10 w-full h-full flex flex-col items-center min-[834px]:block">
+            
+// // //             <div className="w-full max-w-[1297px] mx-auto flex flex-col gap-6 min-[834px]:gap-8 mt-[48px] min-[834px]:mt-[80px]">
+                
+// // //                 {/* Header */}
+// // //                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
+// // //                     <div>
+// // //                         <h2 className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium min-[834px]:font-bold text-[20px] min-[834px]:text-3xl" style={{ fontFamily: '"Google Sans", sans-serif' }}>
+// // //                            {title || "Products For Upcoming Seasons"}
+// // //                         </h2>
+// // //                         <p className="text-sm text-gray-600 max-w-[283px] min-[834px]:max-w-md font-semibold min-[834px]:font-normal leading-[26px] min-[834px]:leading-normal mx-auto min-[834px]:mx-0">
+// // //                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}<br className="hidden min-[834px]:block" />
+                           
+// // //                         </p>
+// // //                     </div>
+                    
+// // //                     <button className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0">
+// // //                         <span className="font-medium text-sm">View All</span>
+// // //                         <ArrowRight size={16} />
+// // //                     </button>
+// // //                 </div>
+
+// // //                 {/* Grid */}
+// // //                 <div className="w-full px-4 xl:px-0">
+// // //                     <div className="
+// // //                          grid grid-cols-2 gap-3
+// // //                          min-[834px]:flex min-[834px]:gap-6 min-[834px]:overflow-x-auto min-[834px]:no-scrollbar min-[834px]:grid-cols-5
+// // //                     ">
+// // //                         {displayProducts.map((product, i) => (
+// // //                            <div 
+// // //                                 key={`${product.product_id}-${i}`} 
+// // //                                 className={`
+// // //                                     w-full min-[834px]:w-auto shrink-0
+// // //                                     ${i >= 2 ? 'hidden min-[834px]:block' : 'block'} 
+// // //                                 `}
+// // //                            >
+// // //                                <ProductCard product={product} />
+// // //                            </div>
+// // //                         ))}
+// // //                     </div>
+// // //                 </div>
+
+// // //                 {/* Mobile Button - Custom Styling per specs */}
+// // //                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-auto absolute bottom-[40px] left-0">
+// // //                     <button 
+// // //                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
+// // //                         style={{
+// // //                             width: '113px',
+// // //                             height: '40px',
+// // //                             padding: '9px 18px 11px 18px'
+// // //                         }}
+// // //                     >
+// // //                         <span className="font-semibold text-[14px] leading-[100%] font-jakarta">View All</span>
+// // //                         <ArrowRight size={16} />
+// // //                     </button>
+// // //                 </div>
+
+// // //             </div>
+// // //         </div>
+// // //       </div>
+// // //     </section>
+// // //   );
+// // // };
+
+// // // export default UpcomingSeason;
 // // 'use client';
 
 // // import React from 'react';
@@ -14,7 +144,7 @@
 // // interface UpcomingSeasonProps {
 // //   data: ApiProduct[];
 // //   title?: string;
-// //   subtitle?: string; // [!code ++
+// //   subtitle?: string;
 // // }
 
 // // const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
@@ -69,16 +199,24 @@
                 
 // //                 {/* Header */}
 // //                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
-// //                     <div>
-// //                         <h2 className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium min-[834px]:font-bold text-[20px] min-[834px]:text-3xl" style={{ fontFamily: '"Google Sans", sans-serif' }}>
+// //                     <div className="flex flex-col items-center min-[834px]:items-start">
+// //                         {/* Dynamic Title */}
+// //                         <h2 
+// //                             className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
+// //                             style={{ fontFamily: '"Google Sans", sans-serif' }}
+// //                         >
 // //                            {title || "Products For Upcoming Seasons"}
 // //                         </h2>
-// //                         <p className="text-sm text-gray-600 max-w-[283px] min-[834px]:max-w-md font-semibold min-[834px]:font-normal leading-[26px] min-[834px]:leading-normal mx-auto min-[834px]:mx-0">
-// //                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}<br className="hidden min-[834px]:block" />
-                           
+                        
+// //                         {/* Dynamic Subtitle */}
+// //                         <p 
+// //                             className="text-[#4D4D4D] text-[14px] min-[834px]:text-[15px] font-semibold leading-[26px] tracking-[0.01em] font-jakarta max-w-[283px] min-[834px]:max-w-md mx-auto min-[834px]:mx-0"
+// //                         >
+// //                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}
 // //                         </p>
 // //                     </div>
                     
+// //                     {/* Desktop Button */}
 // //                     <button className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0">
 // //                         <span className="font-medium text-sm">View All</span>
 // //                         <ArrowRight size={16} />
@@ -88,8 +226,8 @@
 // //                 {/* Grid */}
 // //                 <div className="w-full px-4 xl:px-0">
 // //                     <div className="
-// //                          grid grid-cols-2 gap-3
-// //                          min-[834px]:flex min-[834px]:gap-6 min-[834px]:overflow-x-auto min-[834px]:no-scrollbar min-[834px]:grid-cols-5
+// //                         grid grid-cols-2 gap-3
+// //                         min-[834px]:flex min-[834px]:gap-6 min-[834px]:overflow-x-auto min-[834px]:no-scrollbar min-[834px]:grid-cols-5
 // //                     ">
 // //                         {displayProducts.map((product, i) => (
 // //                            <div 
@@ -105,7 +243,7 @@
 // //                     </div>
 // //                 </div>
 
-// //                 {/* Mobile Button - Custom Styling per specs */}
+// //                 {/* Mobile Button */}
 // //                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-auto absolute bottom-[40px] left-0">
 // //                     <button 
 // //                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
@@ -128,145 +266,205 @@
 // // };
 
 // // export default UpcomingSeason;
-// 'use client';
 
-// import React from 'react';
-// import { ArrowRight } from 'lucide-react';
-// import { ApiProduct } from '@/types/homeApi';
-// import ProductCard from '@/components/shop/ProductCard'; 
-// import { Product, ProductVariant } from '@/types'; 
+// // 'use client';
 
-// const scrollStyles = `
-//   .no-scrollbar::-webkit-scrollbar { display: none; }
-//   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-// `;
+// // import React, { useRef, useEffect } from 'react';
+// // import { ArrowRight } from 'lucide-react';
+// // import { ApiProduct } from '@/types/homeApi';
+// // import ProductCard from '@/components/shop/ProductCard'; 
+// // import { Product, ProductVariant } from '@/types'; 
+// // import { useDraggableScroll } from '@/hooks/useDraggableScroll';
 
-// interface UpcomingSeasonProps {
-//   data: ApiProduct[];
-//   title?: string;
-//   subtitle?: string;
-// }
+// // const scrollStyles = `
+// //   .no-scrollbar::-webkit-scrollbar { display: none; }
+// //   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+// // `;
 
-// const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
-//   if (!data || data.length === 0) return null;
+// // interface UpcomingSeasonProps {
+// //   data: ApiProduct[];
+// //   title?: string;
+// //   subtitle?: string;
+// // }
 
-//   const displayProducts: Product[] = data.slice(0, 5).map((apiItem) => {
-//     const firstVar = apiItem.product_variants[0] || {};
+// // const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
+// //   const scrollRef = useRef<HTMLDivElement>(null);
+  
+// //   useDraggableScroll(scrollRef);
+
+// //   if (!data || data.length === 0) return null;
+
+// //   const mapToProduct = (apiItem: ApiProduct): Product => {
+// //     const firstVar = apiItem.product_variants[0] || {};
+// //     const variants: ProductVariant[] = apiItem.product_variants.map(v => ({
+// //       product_variant_id: v.product_variant_id,
+// //       size: v.size,
+// //       uom: v.uom,
+// //       price: v.price,
+// //       discounted_price: v.discounted_price,
+// //       discount: 0,
+// //       is_active: true
+// //     }));
+
+// //     return {
+// //       product_id: apiItem.product_id,
+// //       product_name: apiItem.product_name,
+// //       brand_name: apiItem.brand?.brand_name || '',
+// //       image_url: apiItem.image,
+// //       product_variant_id: firstVar.product_variant_id,
+// //       size: firstVar.size,
+// //       uom: firstVar.uom,
+// //       price: firstVar.price,
+// //       discounted_price: firstVar.discounted_price,
+// //       discount: 0,
+// //       variants: variants
+// //     };
+// //   };
+
+// //   // 2. Data Preparation
+// //   const originalProducts = data.slice(0, 5).map(mapToProduct);
+// //   // Duplicate ONLY for mobile loop
+// //   const mobileInfiniteProducts = [...originalProducts, ...originalProducts, ...originalProducts]; 
+
+// //   // 3. Infinite Scroll Logic (Mobile Only)
+// //   useEffect(() => {
+// //     const container = scrollRef.current;
+// //     if (!container) return;
+
+// //     const handleScroll = () => {
+// //         if (window.innerWidth >= 834) return; // Disable logic on desktop
+
+// //         const totalScrollWidth = container.scrollWidth;
+// //         const visibleWidth = container.clientWidth;
+// //         const maxScroll = totalScrollWidth - visibleWidth;
+
+// //         if (container.scrollLeft >= maxScroll - 50) { 
+// //             const singleSetWidth = totalScrollWidth / 3; 
+// //             container.scrollLeft = container.scrollLeft - singleSetWidth;
+// //         }
+// //         else if (container.scrollLeft <= 50) {
+// //             const singleSetWidth = totalScrollWidth / 3;
+// //             container.scrollLeft = container.scrollLeft + singleSetWidth;
+// //         }
+// //     };
+
+// //     container.addEventListener('scroll', handleScroll);
     
-//     const variants: ProductVariant[] = apiItem.product_variants.map(v => ({
-//       product_variant_id: v.product_variant_id,
-//       size: v.size,
-//       uom: v.uom,
-//       price: v.price,
-//       discounted_price: v.discounted_price,
-//       discount: 0,
-//       is_active: true
-//     }));
+// //     // Initial centering for mobile
+// //     if (window.innerWidth < 834) {
+// //         setTimeout(() => {
+// //             const singleSetWidth = container.scrollWidth / 3;
+// //             container.scrollLeft = singleSetWidth;
+// //         }, 100);
+// //     }
 
-//     return {
-//       product_id: apiItem.product_id,
-//       product_name: apiItem.product_name,
-//       brand_name: apiItem.brand?.brand_name || '',
-//       image_url: apiItem.image,
-//       product_variant_id: firstVar.product_variant_id,
-//       size: firstVar.size,
-//       uom: firstVar.uom,
-//       price: firstVar.price,
-//       discounted_price: firstVar.discounted_price,
-//       discount: 0,
-//       variants: variants
-//     };
-//   });
+// //     return () => container.removeEventListener('scroll', handleScroll);
+// //   }, [mobileInfiniteProducts]);
 
-//   return (
-//     <section className="w-full flex justify-center font-jakarta bg-white">
-//       <style>{scrollStyles}</style>
-//       <div className="relative w-full h-[539px] min-[834px]:h-[648px] overflow-hidden">
+// //   return (
+// //     <section className="w-full flex justify-center font-jakarta bg-white">
+// //       <style>{scrollStyles}</style>
+// //       <div className="relative w-full h-[539px] min-[834px]:h-[648px] overflow-hidden">
         
-//         {/* Background */}
-//         <div className="absolute inset-0 z-0 bg-black/0.6"> 
-//           <img 
-//             src="/Home/Upcoming/Doodle.png" 
-//             alt="Upcoming Seasons Pattern" 
-//             className="w-full h-full object-cover" 
-//           />
-//         </div>
+// //         {/* Background */}
+// //         <div className="absolute inset-0 z-0 bg-black/0.6"> 
+// //           <img 
+// //             src="/Home/Upcoming/Doodle.png" 
+// //             alt="Upcoming Seasons Pattern" 
+// //             className="w-full h-full object-cover" 
+// //           />
+// //         </div>
 
-//         {/* Content */}
-//         <div className="relative z-10 w-full h-full flex flex-col items-center min-[834px]:block">
+// //         {/* Content */}
+// //         <div className="relative z-10 w-full h-full flex flex-col items-center min-[834px]:block">
             
-//             <div className="w-full max-w-[1297px] mx-auto flex flex-col gap-6 min-[834px]:gap-8 mt-[48px] min-[834px]:mt-[80px]">
+// //             <div className="w-full max-w-[1297px] mx-auto flex flex-col gap-6 min-[834px]:gap-8 mt-[48px] min-[834px]:mt-[80px]">
                 
-//                 {/* Header */}
-//                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
-//                     <div className="flex flex-col items-center min-[834px]:items-start">
-//                         {/* Dynamic Title */}
-//                         <h2 
-//                             className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
-//                             style={{ fontFamily: '"Google Sans", sans-serif' }}
-//                         >
-//                            {title || "Products For Upcoming Seasons"}
-//                         </h2>
+// //                 {/* Header */}
+// //                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
+// //                     <div className="flex flex-col items-center min-[834px]:items-start">
+// //                         <h2 
+// //                             className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
+// //                             style={{ fontFamily: '"Google Sans", sans-serif' }}
+// //                         >
+// //                            {title || "Products For Upcoming Seasons"}
+// //                         </h2>
                         
-//                         {/* Dynamic Subtitle */}
-//                         <p 
-//                             className="text-[#4D4D4D] text-[14px] min-[834px]:text-[15px] font-semibold leading-[26px] tracking-[0.01em] font-jakarta max-w-[283px] min-[834px]:max-w-md mx-auto min-[834px]:mx-0"
-//                         >
-//                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}
-//                         </p>
-//                     </div>
+// //                         <p 
+// //                             className="text-[#4D4D4D] text-[14px] min-[834px]:text-[15px] font-semibold leading-[26px] tracking-[0.01em] font-jakarta max-w-[283px] min-[834px]:max-w-md mx-auto min-[834px]:mx-0"
+// //                         >
+// //                             {subtitle || "Winter-wise Farming: Curated for Crops, Carefully Chosen for You."}
+// //                         </p>
+// //                     </div>
                     
-//                     {/* Desktop Button */}
-//                     <button className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0">
-//                         <span className="font-medium text-sm">View All</span>
-//                         <ArrowRight size={16} />
-//                     </button>
-//                 </div>
+// //                     <button className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0">
+// //                         <span className="font-medium text-sm">View All</span>
+// //                         <ArrowRight size={16} />
+// //                     </button>
+// //                 </div>
 
-//                 {/* Grid */}
-//                 <div className="w-full px-4 xl:px-0">
-//                     <div className="
-//                         grid grid-cols-2 gap-3
-//                         min-[834px]:flex min-[834px]:gap-6 min-[834px]:overflow-x-auto min-[834px]:no-scrollbar min-[834px]:grid-cols-5
-//                     ">
-//                         {displayProducts.map((product, i) => (
-//                            <div 
-//                                 key={`${product.product_id}-${i}`} 
-//                                 className={`
-//                                     w-full min-[834px]:w-auto shrink-0
-//                                     ${i >= 2 ? 'hidden min-[834px]:block' : 'block'} 
-//                                 `}
-//                            >
-//                                <ProductCard product={product} />
-//                            </div>
-//                         ))}
-//                     </div>
-//                 </div>
+// //                 <div className="w-full px-4 xl:px-0">
+                    
+// //                     {/* MOBILE VIEW ONLY: Infinite Scroll */}
+// //                     <div 
+// //                         ref={scrollRef}
+// //                         className="
+// //                             flex gap-3 overflow-x-auto no-scrollbar
+// //                             cursor-grab active:cursor-grabbing
+// //                             min-[834px]:hidden
+// //                         "
+// //                     >
+// //                         {mobileInfiniteProducts.map((product, i) => (
+// //                            <div 
+// //                                 key={`${product.product_id}-${i}`}
+// //                                 className="w-[160px] shrink-0"
+// //                            >
+// //                                <ProductCard product={product} />
+// //                            </div>
+// //                         ))}
+// //                     </div>
 
-//                 {/* Mobile Button */}
-//                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-auto absolute bottom-[40px] left-0">
-//                     <button 
-//                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
-//                         style={{
-//                             width: '113px',
-//                             height: '40px',
-//                             padding: '9px 18px 11px 18px'
-//                         }}
-//                     >
-//                         <span className="font-semibold text-[14px] leading-[100%] font-jakarta">View All</span>
-//                         <ArrowRight size={16} />
-//                     </button>
-//                 </div>
+// //                     {/* [!code changed] DESKTOP VIEW: Changed from Flex to Grid for Strict Layout */}
+// //                     <div className="
+// //                         hidden min-[834px]:grid 
+// //                         min-[834px]:grid-cols-5 
+// //                         gap-6
+// //                     ">
+// //                         {originalProducts.map((product) => (
+// //                            <div 
+// //                                 key={product.product_id}
+// //                                 className="w-auto" // Grid handles width automatically
+// //                            >
+// //                                <ProductCard product={product} />
+// //                            </div>
+// //                         ))}
+// //                     </div>
 
-//             </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
+// //                 </div>
 
-// export default UpcomingSeason;
+// //                 {/* Mobile Button */}
+// //                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-auto absolute bottom-[40px] left-0">
+// //                     <button 
+// //                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
+// //                         style={{
+// //                             width: '113px',
+// //                             height: '40px',
+// //                             padding: '9px 18px 11px 18px'
+// //                         }}
+// //                     >
+// //                         <span className="font-semibold text-[14px] leading-[100%] font-jakarta">View All</span>
+// //                         <ArrowRight size={16} />
+// //                     </button>
+// //                 </div>
 
+// //             </div>
+// //         </div>
+// //       </div>
+// //     </section>
+// //   );
+// // };
+
+// // export default UpcomingSeason;
 // 'use client';
 
 // import React, { useRef, useEffect } from 'react';
@@ -323,7 +521,6 @@
 
 //   // 2. Data Preparation
 //   const originalProducts = data.slice(0, 5).map(mapToProduct);
-//   // Duplicate ONLY for mobile loop
 //   const mobileInfiniteProducts = [...originalProducts, ...originalProducts, ...originalProducts]; 
 
 //   // 3. Infinite Scroll Logic (Mobile Only)
@@ -332,7 +529,7 @@
 //     if (!container) return;
 
 //     const handleScroll = () => {
-//         if (window.innerWidth >= 834) return; // Disable logic on desktop
+//         if (window.innerWidth >= 834) return; 
 
 //         const totalScrollWidth = container.scrollWidth;
 //         const visibleWidth = container.clientWidth;
@@ -350,7 +547,6 @@
 
 //     container.addEventListener('scroll', handleScroll);
     
-//     // Initial centering for mobile
 //     if (window.innerWidth < 834) {
 //         setTimeout(() => {
 //             const singleSetWidth = container.scrollWidth / 3;
@@ -364,7 +560,13 @@
 //   return (
 //     <section className="w-full flex justify-center font-jakarta bg-white">
 //       <style>{scrollStyles}</style>
-//       <div className="relative w-full h-[539px] min-[834px]:h-[648px] overflow-hidden">
+      
+//       {/* [!code changed] Mobile Container Height:
+//          Changed 'h-[539px]' to 'h-auto min-h-[539px] pb-10' 
+//          This allows the container to grow if text pushes content down.
+//          Desktop height remains min-[834px]:h-[648px]
+//       */}
+//       <div className="relative w-full h-auto min-h-[539px] pb-10 min-[834px]:h-[648px] min-[834px]:pb-0 overflow-hidden">
         
 //         {/* Background */}
 //         <div className="absolute inset-0 z-0 bg-black/0.6"> 
@@ -384,7 +586,7 @@
 //                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
 //                     <div className="flex flex-col items-center min-[834px]:items-start">
 //                         <h2 
-//                             className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
+//                             className="text-[#000000] mb-2 min-[834px]:mb-3 font-bold text-[20px] min-[834px]:text-[28px] leading-[100%]" 
 //                             style={{ fontFamily: '"Google Sans", sans-serif' }}
 //                         >
 //                            {title || "Products For Upcoming Seasons"}
@@ -424,7 +626,7 @@
 //                         ))}
 //                     </div>
 
-//                     {/* [!code changed] DESKTOP VIEW: Changed from Flex to Grid for Strict Layout */}
+//                     {/* DESKTOP VIEW ONLY: Static Grid */}
 //                     <div className="
 //                         hidden min-[834px]:grid 
 //                         min-[834px]:grid-cols-5 
@@ -433,7 +635,7 @@
 //                         {originalProducts.map((product) => (
 //                            <div 
 //                                 key={product.product_id}
-//                                 className="w-auto" // Grid handles width automatically
+//                                 className="w-auto" 
 //                            >
 //                                <ProductCard product={product} />
 //                            </div>
@@ -442,8 +644,11 @@
 
 //                 </div>
 
-//                 {/* Mobile Button */}
-//                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-auto absolute bottom-[40px] left-0">
+//                 {/* [!code changed] Mobile Button Positioning:
+//                    Removed 'absolute bottom-[40px]'
+//                    Added 'mt-8' to make it flow naturally after the grid
+//                 */}
+//                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-8">
 //                     <button 
 //                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
 //                         style={{
@@ -469,6 +674,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link'; // [!code ++] Import Link
 import { ApiProduct } from '@/types/homeApi';
 import ProductCard from '@/components/shop/ProductCard'; 
 import { Product, ProductVariant } from '@/types'; 
@@ -561,11 +767,7 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
     <section className="w-full flex justify-center font-jakarta bg-white">
       <style>{scrollStyles}</style>
       
-      {/* [!code changed] Mobile Container Height:
-         Changed 'h-[539px]' to 'h-auto min-h-[539px] pb-10' 
-         This allows the container to grow if text pushes content down.
-         Desktop height remains min-[834px]:h-[648px]
-      */}
+      {/* [!code changed] Mobile Height: h-auto min-h-[539px] to allow growth */}
       <div className="relative w-full h-auto min-h-[539px] pb-10 min-[834px]:h-[648px] min-[834px]:pb-0 overflow-hidden">
         
         {/* Background */}
@@ -586,7 +788,7 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
                 <div className="flex flex-col min-[834px]:flex-row justify-between items-center min-[834px]:items-end w-full px-4 xl:px-0 text-center min-[834px]:text-left">
                     <div className="flex flex-col items-center min-[834px]:items-start">
                         <h2 
-                            className="text-[#000000] mb-2 min-[834px]:mb-3 font-medium text-[20px] min-[834px]:text-[28px] leading-[100%]" 
+                            className="text-[#000000] mb-2 min-[834px]:mb-3 font-bold text-[20px] min-[834px]:text-[28px] leading-[100%]" 
                             style={{ fontFamily: '"Google Sans", sans-serif' }}
                         >
                            {title || "Products For Upcoming Seasons"}
@@ -599,10 +801,14 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
                         </p>
                     </div>
                     
-                    <button className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0">
+                    {/* [!code changed] Desktop Button with Link */}
+                    <Link 
+                        href="/shop" // Link to Shop
+                        className="hidden min-[834px]:flex items-center gap-2 bg-[#003C22] text-white px-6 py-3 rounded-lg hover:bg-emerald-900 transition-colors mt-4 min-[834px]:mt-0"
+                    >
                         <span className="font-medium text-sm">View All</span>
                         <ArrowRight size={16} />
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="w-full px-4 xl:px-0">
@@ -619,7 +825,8 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
                         {mobileInfiniteProducts.map((product, i) => (
                            <div 
                                 key={`${product.product_id}-${i}`}
-                                className="w-[160px] shrink-0"
+                                // [!code changed] Updated Width to match SeedCollection Grid (50vw - 22px)
+                                className="w-[calc(50vw-22px)] shrink-0"
                            >
                                <ProductCard product={product} />
                            </div>
@@ -644,12 +851,10 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
 
                 </div>
 
-                {/* [!code changed] Mobile Button Positioning:
-                   Removed 'absolute bottom-[40px]'
-                   Added 'mt-8' to make it flow naturally after the grid
-                */}
+                {/* [!code changed] Mobile Button with Link */}
                 <div className="min-[834px]:hidden flex justify-center w-full px-4 mt-8">
-                    <button 
+                    <Link 
+                        href="/shop" // Link to Shop
                         className="flex items-center justify-center gap-[4px] bg-[#003C22] text-white rounded-[8px] transition-colors shadow-sm"
                         style={{
                             width: '113px',
@@ -659,7 +864,7 @@ const UpcomingSeason = ({ data, title, subtitle }: UpcomingSeasonProps) => {
                     >
                         <span className="font-semibold text-[14px] leading-[100%] font-jakarta">View All</span>
                         <ArrowRight size={16} />
-                    </button>
+                    </Link>
                 </div>
 
             </div>

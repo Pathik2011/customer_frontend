@@ -733,7 +733,7 @@ const ProductsAccordingToCrop = ({ data, title, subtitle }: ProductsAccordingToC
             <div className="mt-[48px] flex flex-col items-center text-center lg:absolute lg:top-[80px] lg:w-full lg:flex-row lg:justify-between lg:items-start lg:mt-0 lg:text-left">
                 <div className="flex flex-col items-center lg:items-start lg:w-[378px]">
                     <h2 
-                      className="text-[#000000] mb-2 lg:mb-4 text-[20px] lg:text-[28px] font-medium leading-[100%] tracking-[0]" 
+                      className="text-[#000000] mb-2 lg:mb-4 text-[20px] lg:text-[28px] font-bold leading-[100%] tracking-[0]" 
                       style={{ fontFamily: '"Google Sans", sans-serif' }}
                     >
                         {title || "Products According to Crops"}

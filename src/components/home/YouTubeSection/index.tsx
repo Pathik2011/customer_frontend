@@ -731,7 +731,7 @@ const YouTubeSection = ({ data, title, subtitle }: YouTubeSectionProps) => {
             className="flex flex-col items-center text-center absolute top-[40px] min-[834px]:top-[80px]"
         >
             <h2 
-                className="text-[#000000] mb-4 font-medium leading-[100%] text-[20px] min-[834px]:text-[28px]"
+                className="text-[#000000] mb-4 font-bold leading-[100%] text-[20px] min-[834px]:text-[28px]"
                 style={{ fontFamily: '"Google Sans", sans-serif' }}
             >
                 {title || "Watch Us On Youtube"}

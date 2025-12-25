@@ -134,7 +134,7 @@ const PopularProducts = ({ data, title, subtitle }: PopularProductsProps) => {
         {/* Dynamic Header */}
         <div className="flex flex-col items-center mb-8">
             <h2 
-                className="text-center text-[#000000] mb-3 text-[20px] min-[834px]:text-[28px] font-medium leading-[100%] tracking-[0]"
+                className="text-center text-[#000000] mb-3 text-[20px] min-[834px]:text-[28px] font-bold leading-[100%] tracking-[0]"
                 style={{ fontFamily: '"Google Sans", sans-serif' }}
             >
               {title || "Popular Products"}
