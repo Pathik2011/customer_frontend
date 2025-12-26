@@ -1,7 +1,7 @@
 import { getOrSetGuestId } from '@/utils/guestIdentity';
 
 const API_BASE_URL = 'https://zko23b3pf4.execute-api.ap-south-1.amazonaws.com/dev';
-const CART_URL = `${API_BASE_URL}/cart`;
+const CART_URL = `https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev/cart`;
 export const cartService = {
   /**
    * Adds items to the cart (Delta quantity).
@@ -79,37 +79,31 @@ export const cartService = {
     }
   }
 };
-export const mergeCart = async (customerId: string, guestId: string): Promise<void> => {
-  console.log("---------------------------------------------");
+export const mergeCart = async (idToken: string, guestId: string): Promise<void> => {
   console.log("🛒 [cartService] mergeCart() STARTING...");
 
   try {
     const response = await fetch(`${CART_URL}/merge`, {
       method: 'POST',
-      keepalive: true, // Ensures request survives page reload
+      keepalive: true,
       headers: {
         'Content-Type': 'application/json',
-        'customer-id': customerId,
+        'Authorization': `Bearer ${idToken}`, // Correct Header for API Gateway
         'guest-cart-id': guestId,
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({}), 
     });
 
     if (!response.ok) {
-      // [!code changed] READ THE SERVER ERROR MESSAGE
-      const errorText = await response.text(); 
-      console.error("   ❌ [cartService] Merge API FAILED. Status:", response.status);
-      console.error("   ❌ [cartService] Server Message:", errorText);
-      
-      // Pass this message up so AuthContext can save it to LocalStorage
-      throw new Error(`Server responded ${response.status}: ${errorText}`);
+      const errorText = await response.text();
+      console.error("   ❌ [cartService] Merge Failed:", errorText);
+      throw new Error(errorText);
     }
 
     console.log("   ✅ [cartService] Merge API SUCCESS!");
-    console.log("---------------------------------------------");
 
   } catch (error) {
-    console.error('   ❌ [cartService] Network/Logic Error in mergeCart:', error);
+    console.error('   ❌ [cartService] Network/Logic Error:', error);
     throw error;
   }
-};
+}

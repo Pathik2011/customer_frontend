@@ -1,60 +1,40 @@
 import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
 
-const API_URL = 'https://s5mbd1zyyj.execute-api.ap-south-1.amazonaws.com/dev/customers';
-
-export interface CustomerUser {
-  cognito_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  profile_pic_url: string;
-}
+const API_URL = 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev/customers';
 
 export const customerService = {
   syncUser: async () => {
     try {
-      // 1. Get User ID
-      const currentUser = await getCurrentUser();
-      
-      // 2. Get User Details from Session (ID Token) instead of fetching from Cognito API
-      // This bypasses the "Access Token does not have required scopes" error.
+      console.log("🚀 [customerService] Syncing User to DB...");
+
+      // 1. Get the Session Token (ID Token)
       const session = await fetchAuthSession();
-      const idTokenPayload = session.tokens?.idToken?.payload;
+      const idToken = session.tokens?.idToken?.toString();
 
-      if (!idTokenPayload) {
-        throw new Error("Could not retrieve user details from session tokens.");
-      }
+      if (!idToken) throw new Error("Could not retrieve ID Token from session.");
 
-      // 3. Map the data
-      const userData: CustomerUser = {
-        cognito_id: currentUser.userId,
-        email: (idTokenPayload.email as string) || '',
-        first_name: (idTokenPayload.given_name as string) || '',
-        last_name: (idTokenPayload.family_name as string) || '',
-        profile_pic_url: (idTokenPayload.picture as string) || '',
-      };
-
-      console.log("🚀 Syncing User to DB:", userData);
-
-      // 4. Send to Backend
+      // 2. Send to Backend (Empty body, Token in header)
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}` 
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({}), 
       });
 
       if (!response.ok) {
-        throw new Error(`DB Sync Failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`❌ [customerService] Sync Failed (${response.status}):`, errorText);
+        throw new Error(`DB Sync Failed: ${response.status} ${errorText}`);
       }
 
       const responseData = await response.json();
-      console.log("✅ DB Sync Success:", responseData);
+      console.log("✅ [customerService] Sync Success:", responseData);
       return responseData;
 
     } catch (error) {
-      console.error("❌ DB Sync Error:", error);
+      console.error("❌ [customerService] Error:", error);
       throw error;
     }
   }
