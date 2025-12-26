@@ -1,60 +1,51 @@
-import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 const API_URL = 'https://s5mbd1zyyj.execute-api.ap-south-1.amazonaws.com/dev/customers';
 
-export interface CustomerUser {
-  cognito_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  profile_pic_url: string;
-}
-
 export const customerService = {
   syncUser: async () => {
-    try {
-      // 1. Get User ID
-      const currentUser = await getCurrentUser();
-      
-      // 2. Get User Details from Session (ID Token) instead of fetching from Cognito API
-      // This bypasses the "Access Token does not have required scopes" error.
-      const session = await fetchAuthSession();
-      const idTokenPayload = session.tokens?.idToken?.payload;
+    console.log("🟦 [customerService] syncUser() CALLED");
 
-      if (!idTokenPayload) {
-        throw new Error("Could not retrieve user details from session tokens.");
+    try {
+      // 1. Get Token
+      const session = await fetchAuthSession();
+      const idToken = session.tokens?.idToken?.toString();
+
+      if (!idToken) {
+        console.error("❌ [customerService] ABORT: No ID Token found.");
+        throw new Error("No ID Token");
       }
 
-      // 3. Map the data
-      const userData: CustomerUser = {
-        cognito_id: currentUser.userId,
-        email: (idTokenPayload.email as string) || '',
-        first_name: (idTokenPayload.given_name as string) || '',
-        last_name: (idTokenPayload.family_name as string) || '',
-        profile_pic_url: (idTokenPayload.picture as string) || '',
-      };
+      console.log("🟦 [customerService] Token Found. Sending POST to:", API_URL);
 
-      console.log("🚀 Syncing User to DB:", userData);
-
-      // 4. Send to Backend
+      // 2. Call API
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}` 
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({}), 
       });
 
+      // 3. Log Result
+      const text = await response.text(); // Read raw text first
+      console.log(`🟦 [customerService] Response Status: ${response.status}`);
+      console.log(`🟦 [customerService] Response Body: ${text}`);
+
       if (!response.ok) {
-        throw new Error(`DB Sync Failed: ${response.status}`);
+        throw new Error(`Server Error: ${response.status} ${text}`);
       }
 
-      const responseData = await response.json();
-      console.log("✅ DB Sync Success:", responseData);
-      return responseData;
+      // Try to parse JSON if possible, otherwise return text
+      try {
+          return JSON.parse(text);
+      } catch (e) {
+          return { message: "Success", raw: text };
+      }
 
     } catch (error) {
-      console.error("❌ DB Sync Error:", error);
+      console.error("❌ [customerService] FAILED:", error);
       throw error;
     }
   }
