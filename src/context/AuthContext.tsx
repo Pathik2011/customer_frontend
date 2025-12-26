@@ -702,12 +702,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchUser = async () => {
+  const fetchUser = async (source: string) => {
+    console.log(`🕵️ [DEBUG] AuthContext: fetchUser called from [${source}]`);
     try {
       const currentUser = await getCurrentUser();
+      console.log(`👤 [DEBUG] AuthContext: User FOUND: ${currentUser.userId}`);
       setIsAuthenticated(true);
       setUser(currentUser);
     } catch (error) {
+      console.log(`👻 [DEBUG] AuthContext: No User (Guest). Source: [${source}]`);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -716,15 +719,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // 1. Check session on mount
-    fetchUser();
+    fetchUser('Mount');
 
-    // 2. Listen for Auth events to update STATE only
     const hubListener = Hub.listen('auth', ({ payload }) => {
+      console.log(`🔔 [DEBUG] AuthContext: Hub Event: ${payload.event}`);
       switch (payload.event) {
         case 'signedIn':
         case 'signInWithRedirect':
-          fetchUser(); 
+          // [!code highlight] FIX: Set a persistent flag that survives reload
+          console.log("💾 [DEBUG] AuthContext: Setting 'login_sync_pending' flag in LocalStorage");
+          localStorage.setItem('login_sync_pending', 'true');
+          
+          fetchUser(`Hub: ${payload.event}`); 
           break;
         case 'signedOut':
           setIsAuthenticated(false);
@@ -748,7 +754,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // While checking initial session, show a spinner to prevent UI flashing
   if (isLoading) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-white">

@@ -78,9 +78,9 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { QUERY_CONFIG } from "@/config/queryConfig";
-import LoginEventHandler from "@/components/auth/LoginEventHandler"; // [!code ++]
+// [!code highlight] 1. IMPORT THIS
+import LoginEventHandler from "@/components/auth/LoginEventHandler"; 
 
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -123,12 +123,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
+    console.log("🏗️ [DEBUG] Providers: Mounted.");
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {/* [!code ++] The Orchestrator sits here, inside Auth but outside UI */}
+        {/* [!code highlight] 2. ADD THIS LINE. Without it, no APIs will call. */}
         <LoginEventHandler />
         
         <CartProvider>

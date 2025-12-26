@@ -1,19 +1,24 @@
-import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
-const API_URL = 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev/customers';
+const API_URL = 'https://s5mbd1zyyj.execute-api.ap-south-1.amazonaws.com/dev/customers';
 
 export const customerService = {
   syncUser: async () => {
-    try {
-      console.log("🚀 [customerService] Syncing User to DB...");
+    console.log("🟦 [customerService] syncUser() CALLED");
 
-      // 1. Get the Session Token (ID Token)
+    try {
+      // 1. Get Token
       const session = await fetchAuthSession();
       const idToken = session.tokens?.idToken?.toString();
 
-      if (!idToken) throw new Error("Could not retrieve ID Token from session.");
+      if (!idToken) {
+        console.error("❌ [customerService] ABORT: No ID Token found.");
+        throw new Error("No ID Token");
+      }
 
-      // 2. Send to Backend (Empty body, Token in header)
+      console.log("🟦 [customerService] Token Found. Sending POST to:", API_URL);
+
+      // 2. Call API
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
@@ -23,18 +28,24 @@ export const customerService = {
         body: JSON.stringify({}), 
       });
 
+      // 3. Log Result
+      const text = await response.text(); // Read raw text first
+      console.log(`🟦 [customerService] Response Status: ${response.status}`);
+      console.log(`🟦 [customerService] Response Body: ${text}`);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`❌ [customerService] Sync Failed (${response.status}):`, errorText);
-        throw new Error(`DB Sync Failed: ${response.status} ${errorText}`);
+        throw new Error(`Server Error: ${response.status} ${text}`);
       }
 
-      const responseData = await response.json();
-      console.log("✅ [customerService] Sync Success:", responseData);
-      return responseData;
+      // Try to parse JSON if possible, otherwise return text
+      try {
+          return JSON.parse(text);
+      } catch (e) {
+          return { message: "Success", raw: text };
+      }
 
     } catch (error) {
-      console.error("❌ [customerService] Error:", error);
+      console.error("❌ [customerService] FAILED:", error);
       throw error;
     }
   }
