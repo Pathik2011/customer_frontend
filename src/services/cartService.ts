@@ -216,11 +216,8 @@ export const cartService = {
  * Merges Guest Cart into User Cart.
  * Uses POST {CART_URL}/merge
  */
-export const mergeCart = async (idToken: string, guestId: string): Promise<void> => {
-  console.log("🛒 [cartService] mergeCart() STARTING...");
-
+export const mergeCart = async (idToken: string, guestId: string): Promise<any> => {
   try {
-    // Uses the SPECIAL URL you provided for merge
     const response = await fetch(`${CART_URL}/merge`, {
       method: 'POST',
       keepalive: true,
@@ -234,14 +231,14 @@ export const mergeCart = async (idToken: string, guestId: string): Promise<void>
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("   ❌ [cartService] Merge Failed:", errorText);
       throw new Error(errorText);
     }
 
-    console.log("   ✅ [cartService] Merge API SUCCESS!");
+    // [!code ++] Return the data so we can use "total_cart_items"
+    return await response.json(); 
 
   } catch (error) {
-    console.error('   ❌ [cartService] Network/Logic Error:', error);
+    console.error('Cart Merge Error:', error);
     throw error;
   }
 };
