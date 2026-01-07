@@ -1,9 +1,11 @@
 import { HomePageTopResponse } from '@/types/homeApi';
-import { QUERY_CONFIG } from '@/config/queryConfig'; // [!code ++]
+import { QUERY_CONFIG } from '@/config/queryConfig';
+import { API_CONFIG } from '@/config/apiConfig'; // 🟢 Import Config
 
 export const getHomeTop = async (): Promise<HomePageTopResponse> => {
-  const res = await fetch('https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev/user/homepage/sections/top', {
-    next: { revalidate: QUERY_CONFIG.HOME.REVALIDATE_TIME } // Re-fetch every 60 seconds
+  // 🟢 Use Config
+  const res = await fetch(API_CONFIG.ENDPOINTS.HOME_TOP, {
+    next: { revalidate: QUERY_CONFIG.HOME.REVALIDATE_TIME } 
   });
 
   if (!res.ok) throw new Error('Failed to fetch home top section');

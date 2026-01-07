@@ -53,9 +53,9 @@
 // };
 import { FilterApiResponse } from '@/types';
 import { QUERY_CONFIG } from '@/config/queryConfig';
+import { API_CONFIG } from '@/config/apiConfig'; // 🟢 Import Config
 
-const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL || 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
-const API_URL = `${API_HOST}/products/list-for-search-dropdown`;
+const API_URL = API_CONFIG.ENDPOINTS.FILTERS;
 
 // [!code ++] Define Cache Key
 const CACHE_KEY = 'filter_options_cache';
