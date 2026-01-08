@@ -1,6 +1,7 @@
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { API_CONFIG } from '@/config/apiConfig'; // 🟢 Import Config
 
-const API_URL = 'https://s5mbd1zyyj.execute-api.ap-south-1.amazonaws.com/dev/customers';
+const API_URL = API_CONFIG.ENDPOINTS.CUSTOMERS;
 
 export const customerService = {
   syncUser: async () => {

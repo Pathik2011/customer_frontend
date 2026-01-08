@@ -1,8 +1,10 @@
 import { HomePageMidResponse } from '@/types/homeApi';
-import { QUERY_CONFIG } from '@/config/queryConfig'; // [!code ++]  
+import { QUERY_CONFIG } from '@/config/queryConfig'; 
+import { API_CONFIG } from '@/config/apiConfig'; // 🟢 Import Config
 
 export const getHomeMid = async (): Promise<HomePageMidResponse> => {
-  const res = await fetch('https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev/user/homepage/sections/mid', {
+  // 🟢 Use Config
+  const res = await fetch(API_CONFIG.ENDPOINTS.HOME_MID, {
     next: { revalidate: QUERY_CONFIG.HOME.REVALIDATE_TIME }
   });
 

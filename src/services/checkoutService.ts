@@ -1,6 +1,7 @@
 import { CartItem, CartSummary } from '@/context/CartContext';
+import { API_CONFIG } from '@/config/apiConfig'; // 🟢 Import Config
 
-const API_URL = 'https://qhn6j7iwlc.execute-api.ap-south-1.amazonaws.com/dev/checkout';
+const API_URL = API_CONFIG.ENDPOINTS.CHECKOUT;
 
 // Types for the Checkout API Response
 export interface PaymentMethod {

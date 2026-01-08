@@ -105,14 +105,17 @@
 // };
 import { Product, ProductDetail, ProductFilters } from '@/types';
 import { QUERY_CONFIG } from '@/config/queryConfig'; // [!code ++] Import Config
+// ✅ NEW
+import { API_CONFIG } from '@/config/apiConfig';
+const PRODUCTS_URL = API_CONFIG.ENDPOINTS.PRODUCTS;
+const RECOMMENDATIONS_URL = API_CONFIG.ENDPOINTS.RECOMMENDATIONS;
+// // Base Host (Product Service)
+// const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL || 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
+// // Existing endpoint
+// const PRODUCTS_URL = `${API_HOST}/products`;
 
-// Base Host (Product Service)
-const API_HOST = process.env.NEXT_PUBLIC_PRODUCT_API_URL || 'https://6jk2hyyxsl.execute-api.ap-south-1.amazonaws.com/dev';
-// Existing endpoint
-const PRODUCTS_URL = `${API_HOST}/products`;
-
-// New endpoint for recommendations
-const RECOMMENDATIONS_URL = `${API_HOST}/products/cart/recommendations`;
+// // New endpoint for recommendations
+// const RECOMMENDATIONS_URL = `${API_HOST}/products/cart/recommendations`;
 
 // --- Fetch List (Existing) ---
 export const fetchProducts = async (
