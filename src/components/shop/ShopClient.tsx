@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -20,17 +21,21 @@ export default function ShopClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // 1. Initialize State
+  // 1. Initialize State from URL
   const [filters, setFilters] = useState<ProductFilters>(() => ({
     categories: searchParams.getAll('category'),
     brands: searchParams.getAll('brand'),
     crops: searchParams.getAll('crop'),
     minPrice: searchParams.get('min_price') ? Number(searchParams.get('min_price')) : undefined,
     maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
-    searchTerm: searchParams.get('search_term') || undefined, // [!code ++]
+    searchTerm: searchParams.get('search_term') || undefined,
+    
+    // [!code ++] Initialize Size & UOM
+    size: searchParams.get('size') ? Number(searchParams.get('size')) : undefined,
+    uom: searchParams.get('uom') || undefined,
   }));
 
-  // 2. Sync URL Changes
+  // 2. Sync URL Changes (Back/Forward buttons)
   useEffect(() => {
     setFilters({
       categories: searchParams.getAll('category'),
@@ -38,11 +43,15 @@ export default function ShopClient() {
       crops: searchParams.getAll('crop'),
       minPrice: searchParams.get('min_price') ? Number(searchParams.get('min_price')) : undefined,
       maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
-      searchTerm: searchParams.get('search_term') || undefined, // [!code ++]
+      searchTerm: searchParams.get('search_term') || undefined,
+      
+      // [!code ++] Sync Size & UOM
+      size: searchParams.get('size') ? Number(searchParams.get('size')) : undefined,
+      uom: searchParams.get('uom') || undefined,
     });
   }, [searchParams]);
 
-  // 3. Filter Change Handler
+  // 3. Filter Change Handler (Updates URL)
   const handleFilterChange = (newFilters: ProductFilters) => {
     setFilters(newFilters);
 
@@ -53,7 +62,11 @@ export default function ShopClient() {
     
     if (newFilters.minPrice !== undefined) params.set('min_price', newFilters.minPrice.toString());
     if (newFilters.maxPrice !== undefined) params.set('max_price', newFilters.maxPrice.toString());
-    if (newFilters.searchTerm) params.set('search_term', newFilters.searchTerm); // [!code ++]
+    if (newFilters.searchTerm) params.set('search_term', newFilters.searchTerm);
+    
+    // [!code ++] Push Size & UOM to URL
+    if (newFilters.size !== undefined) params.set('size', newFilters.size.toString());
+    if (newFilters.uom) params.set('uom', newFilters.uom);
 
     router.push(`/shop?${params.toString()}`, { scroll: false });
   };
@@ -74,6 +87,7 @@ export default function ShopClient() {
            />
         </div>
         
+        {/* Pass filters to Grid so it fetches the right data */}
         <ProductGrid filters={filters} />
       </main>
 
