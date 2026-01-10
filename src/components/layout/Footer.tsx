@@ -245,21 +245,27 @@ const Footer = () => {
           </div>
 
           {/* 2. Quick Links */}
-          <div className="lg:pl-12">
-            <h3 className="font-bold mb-6 text-lg">Quick Links</h3>
-            <ul className="space-y-4 text-sm text-gray-200">
-              {['Shop', 'About Us', 'Contact Us'].map(link => {
-                const href = link === 'Shop' ? '/shop' : '#';
-                return (
-                  <li key={link}>
-                    <Link href={href} className="hover:text-white cursor-pointer transition-colors">
-                      {link}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+         {/* 2. Quick Links */}
+<div className="lg:pl-12">
+  <h3 className="font-bold mb-6 text-lg">Quick Links</h3>
+  <ul className="space-y-4 text-sm text-gray-200">
+    {['Shop', 'About Us', 'Contact Us'].map(link => {
+      // Logic to determine the correct URL
+      let href = '#';
+      if (link === 'Shop') href = '/shop';
+      if (link === 'About Us') href = '/about-us';
+      // if (link === 'Contact Us') href = '/contact-us'; // Uncomment if you have a contact page
+
+      return (
+        <li key={link}>
+          <Link href={href} className="hover:text-white cursor-pointer transition-colors">
+            {link}
+          </Link>
+        </li>
+      );
+    })}
+  </ul>
+</div>
 
           {/* 3. Categories (Dynamic) */}
           <div>
