@@ -109,6 +109,8 @@ export interface ProductFilters {
   minPrice?: number;
   maxPrice?: number;
   searchTerm?: string; // [!code ++] Added search support
+  size?: number; 
+  uom?: string;
 }
 
 

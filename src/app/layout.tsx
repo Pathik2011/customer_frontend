@@ -3,6 +3,8 @@ import { Geist, Geist_Mono ,Plus_Jakarta_Sans} from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
 
+const isDev = process.env.NEXT_PUBLIC_ENVIRONMENT === 'dev';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,6 +26,12 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Sapana Fertilizers",
   description: "welcome to Sapana Fertilizers",
+  
+  // [!code ++] 2. Add Conditional Robots Tag
+  robots: {
+    index: !isDev, // If dev, index = false
+    follow: !isDev, // If dev, follow = false
+  },
 };
 
 export default function RootLayout({
