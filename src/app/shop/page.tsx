@@ -32,6 +32,8 @@ export default async function ShopPage({ searchParams }: PageProps) {
     crops: parseArray(resolvedParams.crop),
     minPrice: resolvedParams.min_price ? Number(resolvedParams.min_price) : undefined,
     maxPrice: resolvedParams.max_price ? Number(resolvedParams.max_price) : undefined,
+    size: resolvedParams.size ? Number(resolvedParams.size) : undefined,
+    uom: resolvedParams.uom as string | undefined,
   };
 
   // 2. Prefetch Infinite Query

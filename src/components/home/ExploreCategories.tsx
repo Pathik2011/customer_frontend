@@ -26,7 +26,7 @@ const ExploreCategories = () => {
             lineHeight: '100%',
           }}
         >
-          <span className="text-[20px] md:text-[24px] xl:text-[28px]">Explore Categories</span>
+          <span className="text-[20px] md:text-[24px] xl:text-[30px]">Explore Categories</span>
         </h2>
         
         {/* Categories Grid 
