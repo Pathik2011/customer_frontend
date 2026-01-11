@@ -42,6 +42,7 @@ const ExploreCategories = () => {
             <Link 
               key={cat.id} 
               href={`/shop?category=${encodeURIComponent(cat.name)}`} // [!code highlight] Updated to use query params
+              prefetch={false}
               className="
                 group flex flex-col items-center transition-colors cursor-pointer bg-[#F3F3F5] hover:bg-gray-200
                 rounded-[8px] md:rounded-[10px] xl:rounded-[12px]
