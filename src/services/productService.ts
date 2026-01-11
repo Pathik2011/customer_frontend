@@ -12,6 +12,7 @@ export const fetchProducts = async (
   limit: number = 15, 
   filters?: ProductFilters
 ): Promise<Product[]> => {
+  console.log(`⚡ [API Call] GET /products | Filters:`, filters ? JSON.stringify(filters) : "None");
   try {
     const url = new URL(PRODUCTS_URL);
     

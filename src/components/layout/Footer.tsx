@@ -258,7 +258,8 @@ const Footer = () => {
 
       return (
         <li key={link}>
-          <Link href={href} className="hover:text-white cursor-pointer transition-colors">
+          <Link href={href}  prefetch={false}
+          className="hover:text-white cursor-pointer transition-colors">
             {link}
           </Link>
         </li>

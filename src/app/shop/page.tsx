@@ -19,6 +19,7 @@ interface PageProps {
 export default async function ShopPage({ searchParams }: PageProps) {
   const queryClient = new QueryClient();
   const resolvedParams = await searchParams;
+  console.log("🛒 [Shop Page] Triggered with params:", resolvedParams);
 
   // 1. Parse URL Params to match Filter Interface
   const parseArray = (param: string | string[] | undefined): string[] => {

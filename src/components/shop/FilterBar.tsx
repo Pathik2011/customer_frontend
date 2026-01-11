@@ -432,13 +432,36 @@ const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
             </div>
 
             {/* Desktop Only: Sort & Reset */}
-            <div className="hidden lg:flex items-center" style={{ width: '281px', height: '46px', gap: '12px' }}>
-              <button className={`flex-1 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:border-[#013220] ${buttonTextClasses}`} style={{ height: '46px', padding: '0 16px' }}>
+            {/* Desktop Only: Sort & Reset */}
+            <div className="hidden lg:flex items-center gap-3">
+              
+              {/* Sort Button */}
+              <button className={`bg-white border border-gray-200 rounded-lg flex items-center justify-center gap-2 hover:border-[#013220] transition-colors ${buttonTextClasses}`} style={buttonStyle}>
                 Sort By 
                 <img src="/icons/arrow-down.svg" alt="down" style={{ width: '20px', height: '20px' }} />
               </button>
-              <button onClick={handleReset} className={`flex-1 bg-white border border-gray-200 rounded-lg flex items-center justify-center gap-2 hover:text-[#013220] hover:border-[#013220] transition-colors ${buttonTextClasses}`} style={{ height: '46px' }}>
-                Reset Filter <RefreshCw size={14} />
+
+              {/* Reset Button */}
+              <button 
+                onClick={handleReset} 
+                className={`
+                  bg-white border border-[#E0E2E7] rounded-lg 
+                  flex items-center justify-center gap-2 
+                  hover:bg-[#E6F4EA] hover:border-[#003C22] transition-all group
+                  whitespace-nowrap 
+                  ${buttonTextClasses}
+                `} 
+                style={{ height: '46px', padding: '0 16px' }}
+              >
+                {/* 1. Text Left */}
+                <span className="group-hover:text-[#003C22]">Reset Filter</span>
+
+                {/* 2. Icon Right */}
+                <img 
+                  src="/icons/refresh-2.svg" 
+                  alt="Reset" 
+                  className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"
+                />
               </button>
             </div>
 
