@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono ,Plus_Jakarta_Sans} from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
+import { defaultMetadata, localBusinessJsonLd } from '@/config/seo';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const isDev = process.env.NEXT_PUBLIC_ENVIRONMENT === 'dev';
 
@@ -23,16 +25,8 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Sapana Fertilizers",
-  description: "welcome to Sapana Fertilizers",
-  
-  // [!code ++] 2. Add Conditional Robots Tag
-  robots: {
-    index: !isDev, // If dev, index = false
-    follow: !isDev, // If dev, follow = false
-  },
-};
+
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -44,9 +38,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${jakarta.variable} antialiased`}
       >
+        {/* [!code highlight] 2. JSON-LD only renders in Production */}
+        {localBusinessJsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+          />
+        )}
         <Providers>
           {children}
         </Providers>
+        {/* The Analytics Component */}
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ""} />
       </body>
     </html>
   );
