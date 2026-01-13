@@ -49,6 +49,7 @@ export default function RootLayout({
           {children}
         </Providers>
         {/* The Analytics Component */}
+        
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || ""} />
       </body>
     </html>
