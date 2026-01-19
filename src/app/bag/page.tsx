@@ -1,7 +1,7 @@
 
 // 'use client';
 
-// import React, { useState, useEffect } from 'react'; // [!code ++] Import useEffect
+// import React, { useState, useEffect } from 'react';
 // import TopBar from '@/components/layout/TopBar';
 // import Header from '@/components/layout/Header';
 // import NavBar from '@/components/layout/NavBar';
@@ -19,7 +19,6 @@
 // import { CartItem as CartItemType } from '@/types'; 
 
 // export default function BagPage() {
-//   // [!code ++] Get refreshCart from context
 //   const { cartItems, cartSummary, isLoadingCart, isCartUpdating, removeFromCart, refreshCart } = useCart();
 //   const { isAuthenticated } = useAuth();
 //   const router = useRouter();
@@ -30,12 +29,15 @@
 //   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 //   const [itemToRemove, setItemToRemove] = useState<CartItemType | null>(null);
 
-//   // [!code ++] FORCE REFRESH ON MOUNT
-//   // This ensures that when the user clicks the "Bag" icon after login,
-//   // we actually fetch the new list of items from the server.
+//   // [!code changed] SMART REFRESH LOGIC
 //   useEffect(() => {
-//     refreshCart();
-//   }, []);
+//     // If isLoadingCart is TRUE, it means the Context is already fetching (e.g., Refresh/Initial Load).
+//     // In that case, we do NOT call refreshCart() to avoid a double API hit.
+//     // If isLoadingCart is FALSE, it means we navigated here from another page, so we fetch fresh data.
+//     if (!isLoadingCart) {
+//       refreshCart();
+//     }
+//   }, []); 
 
 //   const handleCheckout = () => {
 //     setIsComingSoonOpen(true);
@@ -54,6 +56,7 @@
 //     setItemToRemove(null);
 //   };
 
+//   // Initial Loading State (Spinner)
 //   if (isLoadingCart) {
 //     return (
 //       <div className="min-h-screen bg-[#FAFAFA] font-sans flex flex-col">
@@ -166,27 +169,31 @@ import { CartItem as CartItemType } from '@/types';
 
 export default function BagPage() {
   const { cartItems, cartSummary, isLoadingCart, isCartUpdating, removeFromCart, refreshCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth(); // [!code highlight] Used for the Gate check
   const router = useRouter();
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
-
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<CartItemType | null>(null);
 
-  // [!code changed] SMART REFRESH LOGIC
+  // Smart Refresh Logic
   useEffect(() => {
-    // If isLoadingCart is TRUE, it means the Context is already fetching (e.g., Refresh/Initial Load).
-    // In that case, we do NOT call refreshCart() to avoid a double API hit.
-    // If isLoadingCart is FALSE, it means we navigated here from another page, so we fetch fresh data.
     if (!isLoadingCart) {
       refreshCart();
     }
   }, []); 
 
+  // [!code changed] New "Soft Login Gate" Logic
   const handleCheckout = () => {
-    setIsComingSoonOpen(true);
+    if (isAuthenticated) {
+      // 1. If Logged In -> Go directly to checkout
+      router.push('/checkout');
+    } else {
+      // 2. If Guest -> Set redirect flag & Open Login Popup
+      localStorage.setItem('redirectAfterLogin', '/checkout');
+      setIsLoginOpen(true);
+    }
   };
 
   const handleRequestRemove = (item: CartItemType) => {
@@ -202,7 +209,6 @@ export default function BagPage() {
     setItemToRemove(null);
   };
 
-  // Initial Loading State (Spinner)
   if (isLoadingCart) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] font-sans flex flex-col">
