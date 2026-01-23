@@ -102,6 +102,7 @@ export interface ShippingOption {
 }
 
 export interface ShippingAddress {
+  address_id?: string | number;
   street: string;
   village: string;
   taluka: string | null;

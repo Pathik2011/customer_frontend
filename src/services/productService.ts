@@ -35,7 +35,7 @@ export const fetchProducts = async (
       // [!code ++] NEW: Pack Size Filters
       if (filters.size !== undefined) url.searchParams.append('size', filters.size.toString());
       if (filters.uom) url.searchParams.append('uom', filters.uom);
-
+      if (filters.sortBy) url.searchParams.append('sort_by', filters.sortBy);
       // Search
       if (filters.searchTerm) url.searchParams.append('search_term', filters.searchTerm);
     }

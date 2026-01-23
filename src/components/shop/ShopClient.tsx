@@ -33,6 +33,7 @@ export default function ShopClient() {
     // [!code ++] Initialize Size & UOM
     size: searchParams.get('size') ? Number(searchParams.get('size')) : undefined,
     uom: searchParams.get('uom') || undefined,
+    sortBy: searchParams.get('sort_by') || undefined,
   }));
 
   // 2. Sync URL Changes (Back/Forward buttons)
@@ -48,6 +49,7 @@ export default function ShopClient() {
       // [!code ++] Sync Size & UOM
       size: searchParams.get('size') ? Number(searchParams.get('size')) : undefined,
       uom: searchParams.get('uom') || undefined,
+      sortBy: searchParams.get('sort_by') || undefined,
     });
   }, [searchParams]);
 
@@ -67,7 +69,7 @@ export default function ShopClient() {
     // [!code ++] Push Size & UOM to URL
     if (newFilters.size !== undefined) params.set('size', newFilters.size.toString());
     if (newFilters.uom) params.set('uom', newFilters.uom);
-
+    if (newFilters.sortBy) params.set('sort_by', newFilters.sortBy);
     router.push(`/shop?${params.toString()}`, { scroll: false });
   };
 

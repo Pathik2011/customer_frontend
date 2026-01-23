@@ -111,6 +111,7 @@ export interface ProductFilters {
   searchTerm?: string; // [!code ++] Added search support
   size?: number; 
   uom?: string;
+  sortBy?: string;
 }
 
 
